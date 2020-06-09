@@ -1,0 +1,119 @@
+html, body {
+    margin: 0;
+    height: 100%;
+    background-color: #F5F6FA;
+
+}
+
+.navbar-custom {
+    background-color: #fff;
+}
+
+.sidebar {
+    margin-top: 58px;
+    height: 100%;
+    width: 80px;
+    position: fixed;
+    z-index: 1;
+    top: 0;
+    left: 0;
+    background-color: #fff;
+    overflow-x: hidden;
+    padding-top: 16px;
+    text-align: center;
+}
+
+.material-icons.md-36 {
+    font-size: 28px;
+}
+
+
+.background-custom-color {
+    background-color: #DEE2EC;
+}
+
+.sidebar a {
+    padding-top: 14px;
+    padding-bottom: 8px;
+    text-decoration: none;
+    font-size: 20px;
+    color: #6A7284;
+    display: block;
+
+}
+
+.bottom {
+    position: absolute;
+    bottom: 84px;
+    width: 80px;
+    color: #8D81EF !important;
+}
+
+.sidebar a:hover {
+    color: #100C41;
+    background-color: #DEE2EC;
+}
+
+.main {
+    margin-left: 80px; /* Same as the width of the sidenav */
+    padding: 10px 20px;
+
+}
+
+.custom-cards {
+    border: none;
+    box-shadow: 0 1px 2px 0 rgba(0,0,0,0.14), 0 -1px 1px -1px rgba(0,0,0,0.12), 0 0px 1px 0 rgba(0,0,0,0.20);
+
+}
+
+.marginal {
+    margin-top: 12px !important;
+    margin-bottom: 12px !important;
+}
+.menu-selected {
+    color: #100C41 !important;
+    background-color: #DEE2EC;
+    border-right: 5px solid #4981FD;
+}
+.card-custom-title {
+    font-size: 1.25rem !important;
+    margin-bottom: 0 !important;
+}
+
+.dot {
+  height: 36px;
+  width: 36px;
+  background-color: rgba(73, 129, 253, 0.27);
+  border-radius: 50%;
+  display: inline-block;
+    padding: 4px;
+}
+
+.red-dot {
+  height: 36px;
+  width: 36px;
+  background-color: rgba(241, 7, 94, 0.27);
+  border-radius: 50%;
+  display: inline-block;
+    padding: 4px;
+}
+
+.grey-dot {
+  height: 36px;
+  width: 36px;
+  background-color: rgba(104, 104, 104, 0.27);
+  border-radius: 50%;
+  display: inline-block;
+    padding: 4px;
+}
+
+
+@media screen and (max-height: 450px) {
+    .sidebar {
+        padding-top: 15px;
+    }
+
+    .sidebar a {
+        font-size: 18px;
+    }
+}
