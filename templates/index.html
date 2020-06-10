@@ -12,7 +12,7 @@
     <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
     <title>Hello, world!</title>
 </head>
-<body>
+<body onload="wipeMainChart()">
 <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"
         integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj"
         crossorigin="anonymous"></script>
@@ -23,14 +23,24 @@
         integrity="sha384-OgVRvuATP1z7JjHLkuOU7Xw704+h835Lr+6QL9UvYjZE3Ipu6Tp75j7Bh/kR0JKI"
         crossorigin="anonymous"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.9.3/Chart.min.js"></script>
-<nav class="navbar navbar-light navbar-custom">
+<nav class="navbar navbar-light navbar-custom justify-content-start">
     <a class="navbar-brand" href="#">
         <img src="{{url_for('static', filename='img/logo.png') }}" width="48" height="48" alt="">
     </a>
-    <form method="POST" class="form-inline">
-        <input name="query" id="query" class="form-control mr-sm-2">
-        <button onclick="return loadDoc()" class="btn btn-outline-success my-2 my-sm-0">Submit</button>
-    </form>
+    <div class="col-3"></div>
+    <div class="col-6 ">
+        <form method="POST" class="form-inline" id="search">
+            <div class="search-field col-10 d-flex align-items-center">
+                <i class="material-icons md-36" style="color:#6A7284;">search</i>
+                <input name="query" id="query" class="col-10 text-field"
+                       placeholder="Search with keyword or account name">
+                <div class="loader" id="loader" style="display: none"></div>
+            </div>
+
+            <!--        <button onclick="return loadDoc()" class="btn btn-outline-success my-2 my-sm-0">Submit</button>-->
+        </form>
+    </div>
+    <div class="col-3"></div>
 </nav>
 <div class="container-fluid">
     <div class="sidebar navbar-custom">
@@ -40,161 +50,124 @@
         <a href="#contact" class="bottom"><i class="material-icons md-36">settings</i></a>
     </div>
 
-    <div class="main">
-        <div class="row marginal ">
-            <div class="col-2">
-                <div class="card custom-cards" style="width: 12rem;">
-                    <div class="card-body" style="padding:12px 8px;">
-                        <div class="row no-gutters d-flex align-items-center ">
-                            <div class="col-md-4 d-flex justify-content-center">
-                                <div class="dot">
-                                    <i class="material-icons md-36 "
-                                       style="color: #4981FD">trending_up</i>
-                                </div>
-                            </div>
-                            <div class="col-md-8">
-                                <p class="card-text"><b>35</b><br>positive tweets </p>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <div class="col-2">
-                <div class="card custom-cards" style="width: 12rem;">
-                    <div class="card-body" style="padding:12px 8px;">
-                        <div class="row no-gutters d-flex align-items-center ">
-                            <div class="col-md-4 d-flex justify-content-center">
-                                <div class="red-dot">
-                                    <i class="material-icons md-36 "
-                                       style="color: #F1075E">trending_down</i>
-                                </div>
-                            </div>
-                            <div class="col-md-8">
-                                <p class="card-text"><b>5</b><br>negative tweets </p>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <div class="col-3">
-                <div class="card custom-cards" style="width: 12rem;">
-                    <div class="card-body" style="padding:12px 8px 12px 4px;">
-                        <div class="row no-gutters d-flex align-items-center ">
-                            <div class="col-md-4 d-flex justify-content-center">
-                                <div class="grey-dot">
-                                    <i class="material-icons md-36 "
-                                       style="color: rgba(104, 104, 104, 100);">trending_flat</i>
-                                </div>
-                            </div>
-                            <div class="col-md-8">
-                                <p class="card-text"><b>75</b><br>neutral tweets </p>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-        <div class="row marginal">
+    <div class="main ">
 
-            <div class="col-8">
-                <div class="card custom-cards">
-                    <div class="card-body">
-                        <h5 class="card-title">Overview</h5>
-                        <div id="container" class="container">
-                            <canvas id="myChart"></canvas>
+        <div id="content" >
+            <div class="row marginal ">
+                <div class="col-2">
+                    <div class="card custom-cards" style="width: 12rem;">
+                        <div class="card-body" style="padding:12px 8px;">
+                            <div class="row no-gutters d-flex align-items-center ">
+                                <div class="col-md-4 d-flex justify-content-center">
+                                    <div class="total-dot">
+                                        <i class="material-icons md-36 "
+                                           style="color: #11C8FC">all_inclusive</i>
+                                    </div>
+                                </div>
+                                <div class="col-md-8">
+                                    <p class="card-text"><span id="total-tweets-number"><b>--</b></span><br>tweets
+                                        scraped</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-2">
+                    <div class="card custom-cards" style="width: 12rem;">
+                        <div class="card-body" style="padding:12px 8px;">
+                            <div class="row no-gutters d-flex align-items-center ">
+                                <div class="col-md-4 d-flex justify-content-center">
+                                    <div class="dot">
+                                        <i class="material-icons md-36 "
+                                           style="color: #4981FD">trending_up</i>
+                                    </div>
+                                </div>
+                                <div class="col-md-8">
+                                    <p class="card-text"><span id="positive-tweets-number"><b>--</b></span><br>positive
+                                        tweets </p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-2">
+                    <div class="card custom-cards" style="width: 12rem;">
+                        <div class="card-body" style="padding:12px 8px;">
+                            <div class="row no-gutters d-flex align-items-center ">
+                                <div class="col-md-4 d-flex justify-content-center">
+                                    <div class="red-dot">
+                                        <i class="material-icons md-36 "
+                                           style="color: #F1075E">trending_down</i>
+                                    </div>
+                                </div>
+                                <div class="col-md-8">
+                                    <p class="card-text"><span id="negative-tweets-number"><b>--</b></span><br>negative
+                                        tweets </p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-3">
+                    <div class="card custom-cards" style="width: 12rem;">
+                        <div class="card-body" style="padding:12px 8px 12px 4px;">
+                            <div class="row no-gutters d-flex align-items-center ">
+                                <div class="col-md-4 d-flex justify-content-center">
+                                    <div class="grey-dot">
+                                        <i class="material-icons md-36 "
+                                           style="color: rgba(104, 104, 104, 100);">trending_flat</i>
+                                    </div>
+                                </div>
+                                <div class="col-md-8">
+                                    <p class="card-text"><span id="neutral-tweets-number"><b>35</b></span><br>neutral
+                                        tweets </p>
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </div>
             </div>
-            <div class="col-4">
-                <div class="card custom-cards">
-                    <div class="card-body">
-                        This is some text within a card body.
+            <div class="row marginal">
+
+                <div class="col-8">
+                    <div class="card custom-cards">
+                        <div class="card-body">
+                            <h5 class="card-title">Overview</h5>
+                            <div id="container" class="container">
+                                <canvas id="myChart"></canvas>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-4">
+                    <div class="card custom-cards">
+                        <div class="card-body">
+                            This is some text within a card body.
+                        </div>
                     </div>
                 </div>
             </div>
         </div>
     </div>
 </div>
-    <script>
-        function loadDoc() {
-        //alert("called");
-        var xhttp = new XMLHttpRequest();
-        xhttp.onreadystatechange = function () {
-            let dataList;
-            if (this.readyState === 4 && this.status === 200) {
-                alert("response received")
-                dataList = this.responseText;
-                console.log(dataList)
-                //loadChart(dataList)
-            }
-        };
-        xhttp.open("POST", "/", true);
-        xhttp.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
-        xhttp.send("query=" + document.getElementById("query").value);
+<!--<script type="text/javascript">-->
+<!--    let datalist = JSON.parse('{{ response | tojson | safe}}');-->
 
-    }
-
-    class TimeFragment {
-        constructor(name, negative, neutral, positive) {
-
+<!--</script>-->
+<script type="text/javascript" src="{{url_for('static', filename='js/script.js') }}"></script>
+<script type="text/javascript">
+    $("#query").on("keydown", function (e) {
+        if (e.keyCode === 13) {  //checks whether the pressed key is "Enter"
+            //alert('called')
+            loadDoc();
         }
-    }
-
-    let datalist = JSON.parse('{{ response | tojson | safe}}');
-
-    if (datalist !== ''){
-        loadChart(datalist)
-    }
-
-
-    function loadChart(datalist) {
-        console.log(datalist);
-        let myChart = document.getElementById('myChart').getContext('2d');
-        let positive = [], negative = [], neutral = [];
-        let dates = [];
-
-        for (let i = 0; i < datalist.length; i++) {
-            positive.push(datalist[i].positive);
-            negative.push(datalist[i].negative);
-            neutral.push(datalist[i].neutral);
-            dates.push(datalist[i].name);
-        }
-        positive.reverse();
-        negative.reverse();
-        neutral.reverse();
-        dates.reverse();
-
-        let massPopChart = new Chart(myChart, {
-            type: 'line',
-            data: {
-                labels: dates,
-                datasets: [
-                    {
-                        label: 'Positive',
-                        data: positive,
-                        borderColor: 'rgb(53, 208, 186, 0.6)',
-                        fill: false
-                    },
-                    {
-                        label: 'Negative',
-                        data: negative,
-                        borderColor: 'rgb(217, 32, 39, 0.6)',
-                        fill: false
-                    },
-                    {
-                        label: 'Neutral',
-                        data: neutral,
-                        borderColor: 'rgb(57, 62, 70, 0.6)',
-                        fill: false
-                    }
-                ]
-            },
-            options: {}
-        })
-    }
-    </script>
-
+    });
+    $(document).ready(function () { // Wait until document is fully parsed
+        $("#search").on('submit', function (e) {
+            e.preventDefault();
+        });
+    });
+</script>
 </body>
 </html>
 <!--

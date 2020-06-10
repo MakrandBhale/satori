@@ -29,6 +29,7 @@ def count_sentiment(tweets):
         positive_sentiment = 0
         negative_sentiment = 0
         neutral = 0
+        total = 0
         for tweet in tweet_list:
             if tweet.polarity > 0:
                 positive_sentiment = positive_sentiment + 1
@@ -36,7 +37,7 @@ def count_sentiment(tweets):
                 negative_sentiment = negative_sentiment + 1
             else:
                 neutral = neutral + 1
-
+            total = total +1
         date = ""
         if len(tweet_list) > 0:
             date = tweet_list[0].date.strftime("%d %b")
@@ -46,7 +47,7 @@ def count_sentiment(tweets):
             date = undef_date.strftime("%d %b")
             old_date = undef_date
 
-        time_fragment = TimeFragment(positive_sentiment, negative_sentiment, neutral, date)
+        time_fragment = TimeFragment(positive_sentiment, negative_sentiment, neutral, total, date)
         result.append(time_fragment.serialize())
     return result
 
@@ -57,10 +58,11 @@ def compile_result(tweets):
 
 
 class TimeFragment:
-    def __init__(self, positive, negative, neutral, name):
+    def __init__(self, positive, negative, neutral, total, name):
         self.positive = positive
         self.negative = negative
         self.neutral = neutral
+        self.total = total
         self.name = name
 
     def serialize(self):
@@ -68,5 +70,6 @@ class TimeFragment:
             "name": self.name,
             "positive": self.positive,
             "negative": self.negative,
+            "total": self.total,
             "neutral": self.neutral
         }

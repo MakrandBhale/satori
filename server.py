@@ -17,7 +17,7 @@ def scrape_data():
     tweets = scraper.scrape(query, MONTH)
     processed_tweets = preprocessor.analyze(tweets)
     response = preprocessor.compile_result(processed_tweets)
-    return render_template('index.html', response=response)
+    return jsonify(response)
 
 
 if __name__ == '__main__':
