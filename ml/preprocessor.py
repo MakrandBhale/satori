@@ -1,7 +1,12 @@
 from textblob import TextBlob
 from .sanitizer import sanitize
-from .response import Response
+from nltk.tokenize import word_tokenize
+import nltk
+import string
 import datetime
+
+# nltk.download('stopwords')
+from nltk.corpus import stopwords
 
 POSITIVE = 1
 NEGATIVE = 0
@@ -37,7 +42,7 @@ def count_sentiment(tweets):
                 negative_sentiment = negative_sentiment + 1
             else:
                 neutral = neutral + 1
-            total = total +1
+            total = total + 1
         date = ""
         if len(tweet_list) > 0:
             date = tweet_list[0].date.strftime("%d %b")
@@ -52,9 +57,51 @@ def count_sentiment(tweets):
     return result
 
 
+def cleanTweets(tweet):
+    # splitting into words
+    tokens = word_tokenize(tweet.text)
+    # convert to lower case
+    tokens = [w.lower() for w in tokens]
+    # remove punctuation from each word
+    table = str.maketrans('', '', string.punctuation)
+    stripped = [w.translate(table) for w in tokens]
+    # remove remaining tokens that are not alphabetic
+    words = [word for word in stripped if word.isalpha()]
+    # filter out stop words
+    stop_words = set(stopwords.words('english'))
+    words = [w for w in words if not w in stop_words]
+    return words
+
+
+def wordCloud(tweets):
+    corpus = []
+    for tweet_list in tweets:
+        for tweet in tweet_list:
+            list_of_words = cleanTweets(tweet)
+            corpus.extend(list_of_words)
+
+    cloud = nltk.FreqDist(corpus).most_common(10)
+    print(cloud)
+    return cloud
+
+
 def compile_result(tweets):
     # tweets.sort(key=lambda r: r.date)
-    return count_sentiment(tweets)
+
+    response = Response(count_sentiment(tweets), wordCloud(tweets))
+    return response.serialize()
+
+
+class Response:
+    def __init__(self, timeFragment, freqDist):
+        self.timeFragment = timeFragment
+        self.freqDist = freqDist
+
+    def serialize(self):
+        return {
+            "timeFragment": self.timeFragment,
+            "freqDist": self.freqDist
+        }
 
 
 class TimeFragment:

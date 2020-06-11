@@ -2,20 +2,20 @@ function loadDoc() {
     //alert("called");
     document.getElementById('query').disabled = true;
     wipeMainChart();
-    $( "#loader" ).toggle();
+    $("#loader").toggle();
     var xhttp = new XMLHttpRequest();
     xhttp.onreadystatechange = function () {
         let dataList;
         if (this.readyState === 4 && this.status === 200) {
-            if(this.status === 200){
+            if (this.status === 200) {
                 //alert("response received")
-            dataList = this.responseText;
-            console.log(dataList)
-            loadChart(dataList)
+                dataList = this.responseText;
+                console.log(dataList)
+                loadChart(dataList)
             } else {
                 alert(xhttp.statusText);
             }
-            $( "#loader" ).toggle();
+            $("#loader").toggle();
             document.getElementById('query').disabled = false;
         }
     };
@@ -47,15 +47,15 @@ function setupIndicators(positive, negative, neutral, total) {
 }
 
 
-function wipeMainChart(){
-    plotMainChart([0,0,0],[0,0,0],[0,0,0], ["Jan", "Feb", "March"]);
+function wipeMainChart() {
+    plotMainChart([0, 0, 0], [0, 0, 0], [0, 0, 0], ["Jan", "Feb", "March"]);
     setupIndicators("--", "--", "--", "--");
 }
 
 function loadChart(res) {
-    let datalist = JSON.parse(res)
+    response = JSON.parse(res)
+    let datalist = response.timeFragment;
     console.log(datalist);
-
 
     let positive = [], negative = [], neutral = [];
     let dates = [];
@@ -77,9 +77,42 @@ function loadChart(res) {
     dates.reverse();
 
     plotMainChart(positive, negative, neutral, dates)
+    plotWordFrequencyChart(response.freqDist)
 }
 
-function plotMainChart(positive, negative, neutral, dates){
+function plotWordFrequencyChart(freqDist) {
+    let freqChart = document.getElementById('wordFrequencyChart').getContext('2d');
+    let wordList = []
+    let frequency = []
+    for (let i = 0; i < freqDist.length; i++) {
+        wordList.push(freqDist[i][0]);
+        frequency.push(freqDist[i][1]);
+    }
+    let data = {
+        labels: wordList,
+        datasets: [
+            {
+                backgroundColor: ['#55D8FE', '#FF8373', '#FFDA83', '#A3A0FB', '#5EE2A0', '#4981FD', '#ffa733', '#ffcf33', '#ffee33', '#76ff03'],
+                fill: true,
+                data: frequency,
+                borderWidth: [0,0,0,0,0,0,0,0,0,0]
+            }
+        ]
+    };
+    let pieChart = new Chart(freqChart, {
+        type: 'pie',
+        data: data,
+        options: {
+            legend: {
+                position: 'bottom',
+                align: 'start'
+            }
+        }
+    });
+}
+
+
+function plotMainChart(positive, negative, neutral, dates) {
     let myChart = document.getElementById('myChart').getContext('2d');
     let gradient = myChart.createLinearGradient(0, 0, 0, 450);
     gradient.addColorStop(0, '#F1075E');

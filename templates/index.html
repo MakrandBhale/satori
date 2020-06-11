@@ -23,7 +23,7 @@
         integrity="sha384-OgVRvuATP1z7JjHLkuOU7Xw704+h835Lr+6QL9UvYjZE3Ipu6Tp75j7Bh/kR0JKI"
         crossorigin="anonymous"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.9.3/Chart.min.js"></script>
-<nav class="navbar navbar-light navbar-custom justify-content-start">
+<nav class="navbar fixed-top navbar-light navbar-custom justify-content-start">
     <a class="navbar-brand" href="#">
         <img src="{{url_for('static', filename='img/logo.png') }}" width="48" height="48" alt="">
     </a>
@@ -52,7 +52,7 @@
 
     <div class="main ">
 
-        <div id="content" >
+        <div id="content">
             <div class="row marginal ">
                 <div class="col-2">
                     <div class="card custom-cards" style="width: 12rem;">
@@ -128,7 +128,6 @@
                 </div>
             </div>
             <div class="row marginal">
-
                 <div class="col-8">
                     <div class="card custom-cards">
                         <div class="card-body">
@@ -140,12 +139,21 @@
                     </div>
                 </div>
                 <div class="col-4">
+
+                </div>
+            </div>
+            <div class="row marginal">
+                <div class="col-6">
                     <div class="card custom-cards">
                         <div class="card-body">
-                            This is some text within a card body.
+                            <h5 class="card-title">Top 10 words</h5>
+                            <div id="topWords" class="container">
+                                <canvas id="wordFrequencyChart"></canvas>
+                            </div>
                         </div>
                     </div>
                 </div>
+
             </div>
         </div>
     </div>
