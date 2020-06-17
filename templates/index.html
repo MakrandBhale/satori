@@ -11,8 +11,10 @@
     <link rel="stylesheet" href="{{url_for('static', filename='css/styles.css') }}"/>
     <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
     <title>Hello, world!</title>
+    <link rel="icon" href="{{url_for('static', filename='img/favicon.png') }}" type="image/png" sizes="16x16">
+
 </head>
-<body onload="wipeMainChart()">
+<body>
 <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"
         integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj"
         crossorigin="anonymous"></script>
@@ -23,24 +25,92 @@
         integrity="sha384-OgVRvuATP1z7JjHLkuOU7Xw704+h835Lr+6QL9UvYjZE3Ipu6Tp75j7Bh/kR0JKI"
         crossorigin="anonymous"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.9.3/Chart.min.js"></script>
-<nav class="navbar fixed-top navbar-light navbar-custom justify-content-start">
+<nav class="navbar fixed-top navbar-light navbar-custom justify-content-start no-gutters">
     <a class="navbar-brand" href="#">
-        <img src="{{url_for('static', filename='img/logo.png') }}" width="48" height="48" alt="">
+        <img src="{{url_for('static', filename='img/favicon.png') }}" width="48" height="48" alt="">
     </a>
-    <div class="col-3"></div>
-    <div class="col-6 ">
-        <form method="POST" class="form-inline" id="search">
-            <div class="search-field col-10 d-flex align-items-center">
-                <i class="material-icons md-36" style="color:#6A7284;">search</i>
-                <input name="query" id="query" class="col-10 text-field"
-                       placeholder="Search with keyword or account name">
-                <div class="loader" id="loader" style="display: none"></div>
+    <div class="col-5 offset-3 align-content-between ">
+        <form method="POST" class="" id="search" style="margin-bottom: 6px">
+            <div class="search-field d-flex align-items-center" id="search-field">
+                <table class=" ">
+                    <tr>
+                        <td valign="bottom">
+                            <div class="dropdown-button" style="margin-right: 6px;margin-left: 4px">
+                                <i
+                                        class="material-icons" style="color:#6A7284;">search</i>
+                            </div>
+                        </td>
+                        <td class="absorbing-column no-gutters">
+                            <input name="query" id="query" class="col-12 text-field"
+                                   placeholder="Search with keyword or account name" onfocus="addShadow()"
+                                   onblur="removeShadow()">
+
+                        </td>
+                        <td>
+                            <div class="dropdown-button ">
+                                <span class="custom-badge"></span>
+
+                                <button id="dropdownButton" onclick="showAdvanceSearchOptions()" class="icon-button"
+                                        type="button"
+                                        style="outline: none;text-align:center;border: none;"><i
+                                        class="material-icons md-36" style="color:#6A7284;">arrow_drop_down</i></button>
+                            </div>
+
+                        </td>
+                        <td>
+                            <div class="loader" id="loader" style="display: none"></div>
+                        </td>
+                    </tr>
+                </table>
+
+
             </div>
 
             <!--        <button onclick="return loadDoc()" class="btn btn-outline-success my-2 my-sm-0">Submit</button>-->
         </form>
+        <div id="dropdown" class="row no-gutters" style="">
+            <div class=" col-12">
+                <div id="advanced-search-container" class="col-12">
+                    <form id="advanced-search-form">
+                        <div class="form-row form-group">
+                            <div class="col">
+                                <label for="start-date-picker">Start date</label>
+                                <input type="date" class="form-control" id="start-date-picker">
+                            </div>
+                            <div class="col">
+                                <label for="end-date-picker">End date</label>
+                                <input type="date" class="form-control" id="end-date-picker">
+                            </div>
+
+                        </div>
+                        <div class="form-row form-group">
+                            <div class="col">
+                                <label for="step-input">Step size</label>
+                                <select class="form-control" id="step-input">
+                                    <option value="0">Days</option>
+                                    <option selected value="1">Weeks</option>
+                                    <option value="2">15 days</option>
+                                    <option value="3">Month</option>
+                                </select>
+                            </div>
+                            <div class="col">
+                                <label for="tweet-frequency">Tweet frequency in step</label>
+                                <input type="number" class="form-control" id="tweet-frequency">
+                            </div>
+                        </div>
+                        <div class="form-row justify-content-end">
+                            <div class="col">
+                                <button type="submit" onclick="loadDoc()" class="material-button float-right">Search
+                                </button>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
     </div>
-    <div class="col-3"></div>
+
+
 </nav>
 <div class="container-fluid">
     <div class="sidebar navbar-custom">
@@ -54,8 +124,9 @@
 
         <div id="content">
             <div class="row marginal ">
-                <div class="col-2">
-                    <div class="card custom-cards" style="width: 12rem;">
+
+                <div class="col">
+                    <div class="card custom-cards">
                         <div class="card-body" style="padding:12px 8px;">
                             <div class="row no-gutters d-flex align-items-center ">
                                 <div class="col-md-4 d-flex justify-content-center">
@@ -72,8 +143,8 @@
                         </div>
                     </div>
                 </div>
-                <div class="col-2">
-                    <div class="card custom-cards" style="width: 12rem;">
+                <div class="col">
+                    <div class="card custom-cards">
                         <div class="card-body" style="padding:12px 8px;">
                             <div class="row no-gutters d-flex align-items-center ">
                                 <div class="col-md-4 d-flex justify-content-center">
@@ -90,8 +161,8 @@
                         </div>
                     </div>
                 </div>
-                <div class="col-2">
-                    <div class="card custom-cards" style="width: 12rem;">
+                <div class="col">
+                    <div class="card custom-cards">
                         <div class="card-body" style="padding:12px 8px;">
                             <div class="row no-gutters d-flex align-items-center ">
                                 <div class="col-md-4 d-flex justify-content-center">
@@ -108,8 +179,8 @@
                         </div>
                     </div>
                 </div>
-                <div class="col-3">
-                    <div class="card custom-cards" style="width: 12rem;">
+                <div class="col">
+                    <div class="card custom-cards">
                         <div class="card-body" style="padding:12px 8px 12px 4px;">
                             <div class="row no-gutters d-flex align-items-center ">
                                 <div class="col-md-4 d-flex justify-content-center">
@@ -126,12 +197,18 @@
                         </div>
                     </div>
                 </div>
+                <div class="col"></div>
+                <div class="col"></div>
+
             </div>
             <div class="row marginal">
                 <div class="col-8">
                     <div class="card custom-cards">
+                        <div class="card-header">
+                            <h5>Overview</h5>
+                        </div>
                         <div class="card-body">
-                            <h5 class="card-title">Overview</h5>
+
                             <div id="container" class="container">
                                 <canvas id="myChart"></canvas>
                             </div>
@@ -139,14 +216,24 @@
                     </div>
                 </div>
                 <div class="col-4">
+                    <div class="card custom-cards">
+                        <div class="card-header">
+                            <h5>Top Links</h5>
+                        </div>
+                        <ul class="list-group list-group-flush" id="link-list-id">
 
+                        </ul>
+
+                    </div>
                 </div>
             </div>
             <div class="row marginal">
                 <div class="col-6">
                     <div class="card custom-cards">
+                        <div class="card-header">
+                            <h5>Top 10 words</h5>
+                        </div>
                         <div class="card-body">
-                            <h5 class="card-title">Top 10 words</h5>
                             <div id="topWords" class="container">
                                 <canvas id="wordFrequencyChart"></canvas>
                             </div>
@@ -172,6 +259,9 @@
     });
     $(document).ready(function () { // Wait until document is fully parsed
         $("#search").on('submit', function (e) {
+            e.preventDefault();
+        });
+        $("#advanced-search-form").on('submit', function (e) {
             e.preventDefault();
         });
     });

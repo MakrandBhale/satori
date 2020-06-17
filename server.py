@@ -13,8 +13,8 @@ def home():
 
 @app.route('/', methods=['POST'])
 def scrape_data():
-    query = request.form['query']
-    tweets = scraper.scrape(query, MONTH)
+    search_json = request.get_json()
+    tweets = scraper.scrape(search_json['query'], search_json['stepCount'], search_json['tweetFrequency'], search_json['startDate'], search_json['endDate'])
     processed_tweets = preprocessor.analyze(tweets)
     response = preprocessor.compile_result(processed_tweets)
     return jsonify(response)

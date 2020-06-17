@@ -1,11 +1,10 @@
 from textblob import TextBlob
-from .sanitizer import sanitize
+from .extractor import url_extractor, url_cleaner
 from nltk.tokenize import word_tokenize
 import nltk
 import string
 import datetime
 
-# nltk.download('stopwords')
 from nltk.corpus import stopwords
 
 POSITIVE = 1
@@ -75,32 +74,42 @@ def cleanTweets(tweet):
 
 def wordCloud(tweets):
     corpus = []
+    links_corpus = []
+
     for tweet_list in tweets:
         for tweet in tweet_list:
+            links_corpus.extend(url_extractor(tweet.text))
+            tweet.text = url_cleaner(tweet.text)
             list_of_words = cleanTweets(tweet)
             corpus.extend(list_of_words)
 
-    cloud = nltk.FreqDist(corpus).most_common(10)
-    print(cloud)
-    return cloud
+    cloud = nltk.FreqDist(corpus).most_common(5)
+    link_cloud = nltk.FreqDist(links_corpus).most_common(10)
+    # print(link_cloud)
+    return [cloud, link_cloud]
 
 
 def compile_result(tweets):
     # tweets.sort(key=lambda r: r.date)
+    freqDist = wordCloud(tweets)
 
-    response = Response(count_sentiment(tweets), wordCloud(tweets))
+    response = Response(count_sentiment(tweets), freqDist[0], freqDist[1], '[]')
     return response.serialize()
 
 
 class Response:
-    def __init__(self, timeFragment, freqDist):
+    def __init__(self, timeFragment, wordFreqDist, linkFreqDist, hashtagFreqDist):
         self.timeFragment = timeFragment
-        self.freqDist = freqDist
+        self.wordFreqDist = wordFreqDist
+        self.linkFreqDist = linkFreqDist
+        self.hashtagFreqDist = hashtagFreqDist
 
     def serialize(self):
         return {
             "timeFragment": self.timeFragment,
-            "freqDist": self.freqDist
+            "freqDist": self.wordFreqDist,
+            "linkFreqDist": self.linkFreqDist,
+            "hashtagFreqDist": self.hashtagFreqDist
         }
 
 
