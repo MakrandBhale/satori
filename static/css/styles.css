@@ -75,29 +75,72 @@ h5 {
     border-radius: 8px;
     text-align: center;
     background: #f1f3f4;
+        transition: box-shadow 0.1s ease-in-out;
+
+}
+.icon-button {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    cursor: pointer;
+    border: 0;
+    background: 0 0;
+    transition: all 2s linear;
+        -moz-transition: all 2s linear;
+    -webkit-transition: all 2s linear;
+}
+.icon-button :active,
+.icon-button :focus,
+.icon-button :hover
+{
+        border-radius: 50%;
+
+    background-color:  rgba(172, 172, 172, 0.27);
+}
+.rotate-down{
+  transform: rotate(0deg);
+  transition: transform 300ms linear;
+    transform-origin: center;
 }
 
-.icon-button {
-    height: 36px;
-    width: 36px;
-    border-radius: 50%;
-    display: inline-block;
-    padding: 4px;
-    background-color: rgba(172, 172, 172, 0.27);
+.rotate-up{
+  transform: rotate(180deg);
+  transition: transform 300ms linear;
+    transform-origin: center;
+}
 
+.card-header-icon {
+    vertical-align: middle;
+    color: #343436;
+    padding: 0 8px 0 0;
+}
+
+.expand-more-icon {
+    vertical-align: middle;
+    color: #343436;
+}
+/*.icon-button {*/
+/*    height: 36px;*/
+/*    width: 36px;*/
+/*    border-radius: 50%;*/
+/*    display: inline-block;*/
+/*    padding: 4px;*/
+/*    background-color: rgba(172, 172, 172, 0.27);*/
+/*}*/
+
+.no-border-list {
+    border-bottom: 0;
+    padding: 6px 12px;
+    cursor: pointer;
 }
 
 #query {
     padding-left: 0 !important;
 }
 
-
-.icon-button :hover {
-    border-radius: 50%;
-    display: inline-block;
-
-    background-color: rgba(172, 172, 172, 0.27);
-}
 
 #advanced-search-container {
     z-index: 999999;
@@ -106,13 +149,13 @@ h5 {
     padding: 12px;
     border-radius: 8px;
     background: #fff;
-    box-shadow: 0 2px 2px 0 rgba(0, 0, 0, 0.14), 0 3px 1px -2px rgba(0, 0, 0, 0.12), 0 1px 5px 0 rgba(0, 0, 0, 0.20);
+    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
 
 }
 
 .active-shadow {
     background-color: white;
-    box-shadow: 0 2px 2px 0 rgba(0, 0, 0, 0.14), 0 3px 1px -2px rgba(0, 0, 0, 0.12), 0 1px 5px 0 rgba(0, 0, 0, 0.20);
+    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
 }
 
 #dropdown {
@@ -130,10 +173,12 @@ h5 {
     outline: none !important;
 }
 
+.material-button:focus,
 .material-button:hover {
-    -webkit-box-shadow: 0px 0px 7px 1px rgba(73, 129, 253, 0.73);
-    -moz-box-shadow: 0px 0px 7px 1px rgba(73, 129, 253, 0.73);
-    box-shadow: 0px 0px 7px 1px rgba(73, 129, 253, 0.73);
+    box-shadow: 0 1px 2px 0 rgba(26,115,232,0.451), 0 1px 3px 1px rgba(26,115,232,0.302);
+    background-color: #4981fd;
+    outline: 1px solid transparent;
+    border: none;
 }
 
 
@@ -151,7 +196,16 @@ input:-webkit-autofill,
 input:-webkit-autofill:hover,
 input:-webkit-autofill:focus,
 input:-webkit-autofill:active {
-    -webkit-box-shadow: 0 0 0 30px rgba(255, 255, 255, 0) inset !important;
+
+    -webkit-box-shadow: 0 0 0 1000px rgba(0, 0, 0, 0.001) inset !important;
+}
+
+
+input:-webkit-autofill,
+input:-webkit-autofill:hover,
+input:-webkit-autofill:focus,
+input:-webkit-autofill:active {
+    -webkit-box-shadow: 0 0 0 1000px white inset !important;
 }
 
 .search-field:focus {

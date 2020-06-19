@@ -1,25 +1,14 @@
-import pandas as pd
-
 from datetime import date, timedelta, datetime
 import GetOldTweets3 as got
 from ml import sanitizer
 
-DAYS = '0'
-WEEK = '1'
-HALF_MONTH = '2'
-MONTH = '3'
+DAYS = 0
+WEEK = 1
+HALF_MONTH = 2
+MONTH = 3
 
 
-def get_default_start_date():
-    start_date = datetime.today() - timedelta(days=30)
-    return
-
-
-def get_default_endDate():
-    return datetime.today().strftime("%Y-%m-%d")
-
-
-def scrape(query, stepSize=WEEK, frequency='10', startDate=get_default_start_date(), endDate=get_default_endDate()):
+def scrape(query, startDate, endDate, stepSize, frequency):
     beginDate = datetime.strptime(startDate, "%Y-%m-%d").date()
     lastDate = datetime.strptime(endDate, "%Y-%m-%d").date()
     final_list = []
@@ -42,7 +31,7 @@ def scrape(query, stepSize=WEEK, frequency='10', startDate=get_default_start_dat
             query,
             str(beginDate),
             str(previous_date),
-            int(frequency)
+            frequency
         )
         beginDate = previous_date
         final_list.append(result)

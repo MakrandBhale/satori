@@ -34,31 +34,30 @@
             <div class="search-field d-flex align-items-center" id="search-field">
                 <table class=" ">
                     <tr>
-                        <td valign="bottom">
-                            <div class="dropdown-button" style="margin-right: 6px;margin-left: 4px">
-                                <i
-                                        class="material-icons" style="color:#6A7284;">search</i>
-                            </div>
+                        <td style="vertical-align:bottom; ">
+                            <i class="material-icons"
+                               style="color:#6A7284;margin-left: 4px;margin-right: 4px">search</i>
                         </td>
                         <td class="absorbing-column no-gutters">
                             <input name="query" id="query" class="col-12 text-field"
                                    placeholder="Search with keyword or account name" onfocus="addShadow()"
-                                   onblur="removeShadow()">
+                                   autocomplete="off"
+                            >
 
                         </td>
                         <td>
-                            <div class="dropdown-button ">
+                            <div class="dropdown-button" id="drop-down-button-container">
                                 <span class="custom-badge"></span>
 
-                                <button id="dropdownButton" onclick="showAdvanceSearchOptions()" class="icon-button"
+                                <button id="dropdownButton" onclick="toggleAdvancedSearchOption()" class="icon-button"
                                         type="button"
-                                        style="outline: none;text-align:center;border: none;"><i
+                                        style="outline: none;text-align:center;border: none;"><i id="dropdown-menu-icon"
                                         class="material-icons md-36" style="color:#6A7284;">arrow_drop_down</i></button>
                             </div>
 
                         </td>
                         <td>
-                            <div class="loader" id="loader" style="display: none"></div>
+                            <div class="loader" id="loader" style="display: none; height: 36px;width: 36px"></div>
                         </td>
                     </tr>
                 </table>
@@ -68,7 +67,7 @@
 
             <!--        <button onclick="return loadDoc()" class="btn btn-outline-success my-2 my-sm-0">Submit</button>-->
         </form>
-        <div id="dropdown" class="row no-gutters" style="">
+        <div id="dropdown" class="row no-gutters" style=" display: none">
             <div class=" col-12">
                 <div id="advanced-search-container" class="col-12">
                     <form id="advanced-search-form">
@@ -205,7 +204,7 @@
                 <div class="col-8">
                     <div class="card custom-cards">
                         <div class="card-header">
-                            <h5>Overview</h5>
+                            <h5><i class="material-icons card-header-icon">timeline</i>Overview</h5>
                         </div>
                         <div class="card-body">
 
@@ -218,12 +217,18 @@
                 <div class="col-4">
                     <div class="card custom-cards">
                         <div class="card-header">
-                            <h5>Top Links</h5>
+                            <h5><i class="material-icons card-header-icon">link</i>Top Links</h5>
                         </div>
                         <ul class="list-group list-group-flush" id="link-list-id">
 
                         </ul>
+                        <div id="view-all-button" class="card-body text-right"
+                             style="padding: 10px 8px; border-top: 1px solid rgba(0,0,0,.125);display: block;">
+                            <a  href="#" class="card-link " data-toggle="collapse" onclick="expandListClicked()"
+                                data-target="#remaining-list" style="color: #4981FD;font-weight: bold"><span id="viewAllLink">View All</span>
+                            <i id="expand-icon" class="material-icons md-36 expand-more-icon" style="color:#6A7284;">expand_more</i></a>
 
+                        </div>
                     </div>
                 </div>
             </div>
@@ -231,7 +236,7 @@
                 <div class="col-6">
                     <div class="card custom-cards">
                         <div class="card-header">
-                            <h5>Top 10 words</h5>
+                            <h5><i class="material-icons card-header-icon">font_download</i>Top 10 words</h5>
                         </div>
                         <div class="card-body">
                             <div id="topWords" class="container">
