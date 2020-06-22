@@ -1,4 +1,3 @@
-let mainChart, wordCloudChart;
 
 function loadDoc() {
     //alert("called");
@@ -161,7 +160,6 @@ function setupLinkFrequencyList(linkFreqDist) {
 function plotWordFrequencyChart(freqDist) {
     let freqChart = document.getElementById('wordFrequencyChart').getContext('2d');
     console.log("Pie chart below")
-    removeData(wordCloudChart);
 
     let wordList = []
     let frequency = []
@@ -179,8 +177,10 @@ function plotWordFrequencyChart(freqDist) {
                 borderWidth: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
             }
         ]
-    };
-    wordCloudChart = new Chart(freqChart, {
+    };if(window.wordCloudChart){
+	    window.wordCloudChart.destroy();
+    }
+    window.wordCloudChart = new Chart(freqChart, {
         type: 'pie',
         data: data,
         options: {
@@ -194,10 +194,9 @@ function plotWordFrequencyChart(freqDist) {
     });
 }
 
-
+let myChart = document.getElementById('myChart').getContext('2d');
 function plotMainChart(positive, negative, neutral, dates) {
-    let myChart = document.getElementById('myChart').getContext('2d');
-    removeData(mainChart);
+
     let gradient = myChart.createLinearGradient(0, 0, 0, 450);
     gradient.addColorStop(0, '#F1075E');
     gradient.addColorStop(0.5, 'rgba(241,7,94,0.5)');
@@ -213,7 +212,11 @@ function plotMainChart(positive, negative, neutral, dates) {
     greyGradient.addColorStop(0.5, 'rgb(57, 62, 70, 0.25)');
     greyGradient.addColorStop(1, 'rgb(57, 62, 70, 0)');
 
-    mainChart = new Chart(myChart, {
+    if(window.mainChart){
+	    window.mainChart.destroy();
+    }
+
+    window.mainChart = new Chart(myChart, {
         type: 'line',
         data: {
             labels: dates,
@@ -317,11 +320,4 @@ function expandListClicked() {
         expandIcon.classList.remove("rotate-up")
     }
     expanded = !expanded;
-}
-
-function removeData(chart) {
-    console.log(chart)
-    if (chart !== undefined) {
-        chart.destroy();
-    }
 }

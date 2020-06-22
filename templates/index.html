@@ -52,7 +52,9 @@
                                 <button id="dropdownButton" onclick="toggleAdvancedSearchOption()" class="icon-button"
                                         type="button"
                                         style="outline: none;text-align:center;border: none;"><i id="dropdown-menu-icon"
-                                        class="material-icons md-36" style="color:#6A7284;">arrow_drop_down</i></button>
+                                                                                                 class="material-icons md-36"
+                                                                                                 style="color:#6A7284;">arrow_drop_down</i>
+                                </button>
                             </div>
 
                         </td>
@@ -73,18 +75,27 @@
                     <form id="advanced-search-form">
                         <div class="form-row form-group">
                             <div class="col">
-                                <label for="start-date-picker">Start date</label>
+                                <label for="start-date-picker">Start date<span data-toggle="tooltip"
+                                                                               data-placement="right"
+                                                                               title="Search for tweets from this date."><i
+                                        class="material-icons md-24 inline-icon">help_outline</i></span></label>
                                 <input type="date" class="form-control" id="start-date-picker">
                             </div>
                             <div class="col">
-                                <label for="end-date-picker">End date</label>
+                                <label for="end-date-picker">End date <span data-toggle="tooltip"
+                                                                               data-placement="right"
+                                                                               title="Tweets will be searched till this date."><i
+                                        class="material-icons md-24 inline-icon">help_outline</i></span></label>
                                 <input type="date" class="form-control" id="end-date-picker">
                             </div>
 
                         </div>
                         <div class="form-row form-group">
                             <div class="col">
-                                <label for="step-input">Step size</label>
+                                <label for="step-input">Step size<span data-toggle="tooltip"
+                                                                               data-placement="right"
+                                                                               title="(X-axis) Tweets will be searched in these steps. For ex. if 'weeks' option is selected, tweets will be searched by weeks timespan, until end date is reached."><i
+                                        class="material-icons md-24 inline-icon">help_outline</i></span></label>
                                 <select class="form-control" id="step-input">
                                     <option value="0">Days</option>
                                     <option selected value="1">Weeks</option>
@@ -93,7 +104,10 @@
                                 </select>
                             </div>
                             <div class="col">
-                                <label for="tweet-frequency">Tweet frequency in step</label>
+                                <label for="tweet-frequency">Tweet frequency in step <span data-toggle="tooltip"
+                                                                               data-placement="right"
+                                                                               title="(Y-axis) Number of maximum tweets to search in each steps. "><i
+                                        class="material-icons md-24 inline-icon">help_outline</i></span></label>
                                 <input type="number" class="form-control" id="tweet-frequency">
                             </div>
                         </div>
@@ -224,9 +238,11 @@
                         </ul>
                         <div id="view-all-button" class="card-body text-right"
                              style="padding: 10px 8px; border-top: 1px solid rgba(0,0,0,.125);display: block;">
-                            <a  href="#" class="card-link " data-toggle="collapse" onclick="expandListClicked()"
-                                data-target="#remaining-list" style="color: #4981FD;font-weight: bold"><span id="viewAllLink">View All</span>
-                            <i id="expand-icon" class="material-icons md-36 expand-more-icon" style="color:#6A7284;">expand_more</i></a>
+                            <a href="#" class="card-link " data-toggle="collapse" onclick="expandListClicked()"
+                               data-target="#remaining-list" style="color: #4981FD;font-weight: bold"><span
+                                    id="viewAllLink">View All</span>
+                                <i id="expand-icon" class="material-icons md-36 expand-more-icon"
+                                   style="color:#6A7284;">expand_more</i></a>
 
                         </div>
                     </div>
@@ -236,7 +252,7 @@
                 <div class="col-6">
                     <div class="card custom-cards">
                         <div class="card-header">
-                            <h5><i class="material-icons card-header-icon">font_download</i>Top 10 words</h5>
+                            <h5><i class="material-icons card-header-icon">pie_chart</i>Top 10 words</h5>
                         </div>
                         <div class="card-body">
                             <div id="topWords" class="container">
@@ -270,6 +286,10 @@
             e.preventDefault();
         });
     });
+
+    $(function () {
+        $('[data-toggle="tooltip"]').tooltip()
+    })
 </script>
 </body>
 </html>

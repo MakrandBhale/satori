@@ -3,6 +3,17 @@ from scraper import scraper
 from ml import preprocessor
 from validator.ErrorClass import ErrorResponse
 from validator import validator
+import nltk
+
+
+try:
+    nltk.download('punkt', download_dir='/opt/python/current/app')
+    nltk.download('stopwords')
+except:
+    nltk.download('punkt')
+    nltk.download('stopwords')
+
+
 
 app = Flask(__name__, template_folder="templates")
 MONTH = 0

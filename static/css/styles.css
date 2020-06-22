@@ -118,6 +118,15 @@ h5 {
     padding: 0 8px 0 0;
 }
 
+.inline-icon {
+    vertical-align: middle;
+    color: #343436;
+    padding: 0 0 0 6px;
+}
+
+.material-icons.md-24 { font-size: 24px; }
+
+
 .expand-more-icon {
     vertical-align: middle;
     color: #343436;
