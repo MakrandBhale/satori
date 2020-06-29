@@ -1,11 +1,16 @@
-from datetime import date, timedelta, datetime
+from datetime import timedelta, datetime
 import GetOldTweets3 as got
 from ml import sanitizer
+import redis
+from rq import Queue
 
 DAYS = 0
 WEEK = 1
 HALF_MONTH = 2
 MONTH = 3
+
+r = redis.Redis()
+q = Queue(connection=r)
 
 
 def scrape(query, startDate, endDate, stepSize, frequency):
@@ -27,18 +32,19 @@ def scrape(query, startDate, endDate, stepSize, frequency):
     while beginDate <= lastDate:
         # start from begin date and end when it get over it.
         previous_date = beginDate + timedelta(days=substraction_factor)
-        result = scrapeTweet(
-            query,
-            str(beginDate),
-            str(previous_date),
-            frequency
-        )
+        job = q.enqueue(scrape_tweet, query, str(beginDate), str(previous_date), frequency)
+        # result = scrape_tweet(
+        #     query,
+        #     str(beginDate),
+        #     str(previous_date),
+        #     frequency
+        # )
         beginDate = previous_date
-        final_list.append(result)
+        final_list.append(job.id)
     return final_list
 
 
-def scrapeTweet(query, begin_date, end_date, limit):
+def scrape_tweet(query, begin_date, end_date, limit):
     tweet_criteria = got.manager.TweetCriteria().setQuerySearch(query) \
         .setSince(begin_date) \
         .setUntil(end_date) \

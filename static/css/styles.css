@@ -9,6 +9,14 @@ h5 {
     margin-bottom: 0;
 }
 
+#loading-screen {
+
+}
+
+.loading-content {
+
+}
+
 .navbar-custom {
     background-color: #fff;
 }
@@ -55,18 +63,20 @@ h5 {
 
 .sidebar a:hover {
     color: #100C41;
-    background-color: #DEE2EC;
+    background-color: red;
 }
 
-.main {
-    margin-left: 80px; /* Same as the width of the sidenav */
-    padding: 72px 20px 10px;
+.main-content {
+    height: 100vh;
+
+    /*margin-left: 80px; !* Same as the width of the sidenav *!*/
+    padding: 80px 20px 10px;
 }
 
 .custom-cards {
     border: none;
     box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.14), 0 -1px 1px -1px rgba(0, 0, 0, 0.12), 0 0px 1px 0 rgba(0, 0, 0, 0.20);
-
+    border-radius: 8px;
 }
 
 .search-field {
@@ -75,9 +85,10 @@ h5 {
     border-radius: 8px;
     text-align: center;
     background: #f1f3f4;
-        transition: box-shadow 0.1s ease-in-out;
+    transition: box-shadow 0.1s ease-in-out;
 
 }
+
 .icon-button {
     display: flex;
     align-items: center;
@@ -89,26 +100,27 @@ h5 {
     border: 0;
     background: 0 0;
     transition: all 2s linear;
-        -moz-transition: all 2s linear;
+    -moz-transition: all 2s linear;
     -webkit-transition: all 2s linear;
 }
+
 .icon-button :active,
 .icon-button :focus,
-.icon-button :hover
-{
-        border-radius: 50%;
+.icon-button :hover {
+    border-radius: 50%;
 
-    background-color:  rgba(172, 172, 172, 0.27);
+    background-color: rgba(172, 172, 172, 0.27);
 }
-.rotate-down{
-  transform: rotate(0deg);
-  transition: transform 300ms linear;
+
+.rotate-down {
+    transform: rotate(0deg);
+    transition: transform 300ms linear;
     transform-origin: center;
 }
 
-.rotate-up{
-  transform: rotate(180deg);
-  transition: transform 300ms linear;
+.rotate-up {
+    transform: rotate(180deg);
+    transition: transform 300ms linear;
     transform-origin: center;
 }
 
@@ -124,13 +136,16 @@ h5 {
     padding: 0 0 0 6px;
 }
 
-.material-icons.md-24 { font-size: 24px; }
+.material-icons.md-24 {
+    font-size: 24px;
+}
 
 
 .expand-more-icon {
     vertical-align: middle;
     color: #343436;
 }
+
 /*.icon-button {*/
 /*    height: 36px;*/
 /*    width: 36px;*/
@@ -171,6 +186,15 @@ h5 {
 
 }
 
+.bg-custom-blue {
+    border-radius: 12px;
+    background-image: linear-gradient(to right, #2575fc 0%, #6a11cb 100%);;
+    /*background-image: linear-gradient(to left, #00c6fb 0%, #005bea 100%);*/
+    -webkit-box-shadow: 11px 5px 27px -10px rgba(0,0,0,0.67);
+-moz-box-shadow: 11px 5px 27px -10px rgba(0,0,0,0.67);
+box-shadow: 11px 5px 27px -10px rgba(0,0,0,0.67);
+}
+
 .material-button {
     background-color: #4981FD;
     border-radius: 4px;
@@ -184,7 +208,7 @@ h5 {
 
 .material-button:focus,
 .material-button:hover {
-    box-shadow: 0 1px 2px 0 rgba(26,115,232,0.451), 0 1px 3px 1px rgba(26,115,232,0.302);
+    box-shadow: 0 1px 2px 0 rgba(26, 115, 232, 0.451), 0 1px 3px 1px rgba(26, 115, 232, 0.302);
     background-color: #4981fd;
     outline: 1px solid transparent;
     border: none;
@@ -263,14 +287,15 @@ input:-webkit-autofill:active {
 .custom-badge {
     background-color: #005fd1;
     border-radius: 50%;
-    height:12px;
-    width:12px;
+    height: 12px;
+    width: 12px;
     padding: 4px;
     display: inline-block;
     position: absolute;
 
 }
-.custom-highlighter{
+
+.custom-highlighter {
     height: 18px;
     width: 36px;
     background-color: rgba(73, 129, 253, 0.27);

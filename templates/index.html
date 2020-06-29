@@ -15,9 +15,12 @@
 
 </head>
 <body>
-<script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"
-        integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj"
-        crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.5.1/jquery.min.js"
+        integrity="sha256-9/aliU8dGd2tb6OSsuzixeV4y/faTqgFtohetphbbj0=" crossorigin="anonymous"></script>
+
+<!--<script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"-->
+<!--        integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj"-->
+<!--        crossorigin="anonymous"></script>-->
 <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js"
         integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo"
         crossorigin="anonymous"></script>
@@ -25,6 +28,8 @@
         integrity="sha384-OgVRvuATP1z7JjHLkuOU7Xw704+h835Lr+6QL9UvYjZE3Ipu6Tp75j7Bh/kR0JKI"
         crossorigin="anonymous"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.9.3/Chart.min.js"></script>
+<script src="https://unpkg.com/@lottiefiles/lottie-player@0.4.0/dist/lottie-player.js"></script>
+
 <nav class="navbar fixed-top navbar-light navbar-custom justify-content-start no-gutters">
     <a class="navbar-brand" href="#">
         <img src="{{url_for('static', filename='img/favicon.png') }}" width="48" height="48" alt="">
@@ -83,8 +88,8 @@
                             </div>
                             <div class="col">
                                 <label for="end-date-picker">End date <span data-toggle="tooltip"
-                                                                               data-placement="right"
-                                                                               title="Tweets will be searched till this date."><i
+                                                                            data-placement="right"
+                                                                            title="Tweets will be searched till this date."><i
                                         class="material-icons md-24 inline-icon">help_outline</i></span></label>
                                 <input type="date" class="form-control" id="end-date-picker">
                             </div>
@@ -93,8 +98,8 @@
                         <div class="form-row form-group">
                             <div class="col">
                                 <label for="step-input">Step size<span data-toggle="tooltip"
-                                                                               data-placement="right"
-                                                                               title="(X-axis) Tweets will be searched in these steps. For ex. if 'weeks' option is selected, tweets will be searched by weeks timespan, until end date is reached."><i
+                                                                       data-placement="right"
+                                                                       title="(X-axis) Tweets will be searched in these steps. For ex. if 'weeks' option is selected, tweets will be searched by weeks timespan, until end date is reached."><i
                                         class="material-icons md-24 inline-icon">help_outline</i></span></label>
                                 <select class="form-control" id="step-input">
                                     <option value="0">Days</option>
@@ -105,8 +110,8 @@
                             </div>
                             <div class="col">
                                 <label for="tweet-frequency">Tweet frequency in step <span data-toggle="tooltip"
-                                                                               data-placement="right"
-                                                                               title="(Y-axis) Number of maximum tweets to search in each steps. "><i
+                                                                                           data-placement="right"
+                                                                                           title="(Y-axis) Number of maximum tweets to search in each steps. "><i
                                         class="material-icons md-24 inline-icon">help_outline</i></span></label>
                                 <input type="number" class="form-control" id="tweet-frequency">
                             </div>
@@ -126,18 +131,51 @@
 
 </nav>
 <div class="container-fluid">
-    <div class="sidebar navbar-custom">
+    <div style="display: none" class="sidebar navbar-custom">
         <a href="#home" class="menu-selected"><i class="material-icons md-36">home</i></a>
         <a href="#services"><i class="material-icons md-36">watch_later</i></a>
         <a href="#clients"><i class="material-icons md-36">person</i></a>
         <a href="#contact" class="bottom"><i class="material-icons md-36">settings</i></a>
     </div>
 
-    <div class="main ">
+    <div class="main-content">
+        <div style="display: none" id="loading-content" class="col-12 h-100">
+            <div style="height: 50%!important;" class="row" >
+                <div class="col-6 d-flex offset-3 justify-content-center align-items-end">
+                    <lottie-player class="" id="box-animation"
+                                   src="https://assets2.lottiefiles.com/private_files/lf30_CxKW0a.json"
+                                   background="transparent"
+                                   speed="1" style="height: 300px;width: 300px" loop
+                                   autoplay></lottie-player>
+                    <lottie-player id="done-animation"
+                                   src="https://assets7.lottiefiles.com/packages/lf20_af6FNU.json"
+                                   background="transparent"
+                                   speed="1" style="display:none; height: 300px;width: 300px"
+                                   autoplay></lottie-player>
+                </div>
 
-        <div id="content">
+            </div>
+            <div class="row h-auto d-flex justify-content-center">
+                <div class="col-lg-4 col-md-6 col-sm-11 ">
+                    <div class="col-12 text-center">
+                        <h4 id="">Fetching data, please wait.</h4>
+                        <div class="progress"
+                             style="margin-top:8px; margin-bottom:4px;width:100%;height: 20px; border-radius: 12px; background-color: #d4d4d4">
+                            <div id="progress-bar" class="progress-bar bg-custom-blue " role="progressbar"
+                                 style="width: 0;"
+                                 aria-valuenow="0"
+                                 aria-valuemin="0"
+                                 aria-valuemax="100"></div>
+                        </div>
+                        <h3 id="percentage-count">0%</h3>
+                    </div>
+
+
+                </div>
+            </div>
+        </div>
+        <div style="display: none" id="content">
             <div class="row marginal ">
-
                 <div class="col">
                     <div class="card custom-cards">
                         <div class="card-body" style="padding:12px 8px;">
@@ -203,7 +241,7 @@
                                     </div>
                                 </div>
                                 <div class="col-md-8">
-                                    <p class="card-text"><span id="neutral-tweets-number"><b>35</b></span><br>neutral
+                                    <p class="card-text"><span id="neutral-tweets-number"><b>--</b></span><br>neutral
                                         tweets </p>
                                 </div>
                             </div>
@@ -215,7 +253,7 @@
 
             </div>
             <div class="row marginal">
-                <div class="col-8">
+                <div class="col-7">
                     <div class="card custom-cards">
                         <div class="card-header">
                             <h5><i class="material-icons card-header-icon">timeline</i>Overview</h5>
@@ -228,6 +266,21 @@
                         </div>
                     </div>
                 </div>
+                <div class="col-5">
+                    <div class="card custom-cards">
+                        <div class="card-header">
+                            <h5><i class="material-icons card-header-icon">pie_chart</i>Top 10 words</h5>
+                        </div>
+                        <div class="card-body ">
+                            <div id="topWords" class="container">
+                                <canvas id="wordFrequencyChart"></canvas>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="row marginal">
+
                 <div class="col-4">
                     <div class="card custom-cards">
                         <div class="card-header">
@@ -247,25 +300,12 @@
                         </div>
                     </div>
                 </div>
-            </div>
-            <div class="row marginal">
-                <div class="col-6">
-                    <div class="card custom-cards">
-                        <div class="card-header">
-                            <h5><i class="material-icons card-header-icon">pie_chart</i>Top 10 words</h5>
-                        </div>
-                        <div class="card-body">
-                            <div id="topWords" class="container">
-                                <canvas id="wordFrequencyChart"></canvas>
-                            </div>
-                        </div>
-                    </div>
-                </div>
 
             </div>
         </div>
     </div>
 </div>
+
 <!--<script type="text/javascript">-->
 <!--    let datalist = JSON.parse('{{ response | tojson | safe}}');-->
 
