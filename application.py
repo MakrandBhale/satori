@@ -50,9 +50,9 @@ def get_status(task_id):
     task = q.fetch_job(task_id)
     if task:
         res = ""
-        if task.result is not None:
-            processed_tweets = preprocessor.analyze(tweets=task.result)
-            res = preprocessor.compile_result(processed_tweets)
+        # if task.result is not None:
+        #     # processed_tweets = preprocessor.analyze(tweets=task.result)
+        #     # res = preprocessor.compile_result(processed_tweets)
 
         response_object = {
             "status": "success",
@@ -65,6 +65,33 @@ def get_status(task_id):
     else:
         response_object = {"status": "error"}
     return jsonify(response_object)
+
+
+@app.route('/get_results/', methods=['POST', 'GET'])
+def get_result():
+    job_list = json.loads(request.get_data())
+    q = Queue(connection=redis_conn)
+    finished_job_list = []
+    for job in job_list:
+        task = q.fetch_job(job)
+        if task.get_status() == "finished":
+            finished_job_list.append(task)
+
+    if len(finished_job_list) == len(job_list):
+        # which means all jobs completed;
+        response = post_processing(finished_job_list)
+        return jsonify(response)
+        # return app.response_class(response=jsonify(response),
+        #                           status=200,
+        #                           mimetype='application/json')
+
+
+def post_processing(finished_job_list):
+    job_result_array = []
+    for job in finished_job_list:
+        job_result_array.append(job.result)
+    processed_tweets = preprocessor.analyze(tweets=job_result_array)
+    return preprocessor.compile_result(processed_tweets)
 
 
 if __name__ == '__main__':

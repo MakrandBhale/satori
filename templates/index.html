@@ -10,6 +10,7 @@
           integrity="sha384-9aIt2nRpC12Uk9gS9baDl411NQApFmC26EwAOH8WgZl5MYYxFfc+NcPb1dKGj7Sk" crossorigin="anonymous">
     <link rel="stylesheet" href="{{url_for('static', filename='css/styles.css') }}"/>
     <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
+    <link href='https://cdn.jsdelivr.net/npm/boxicons@2.0.5/css/boxicons.min.css' rel='stylesheet'>
     <title>Hello, world!</title>
     <link rel="icon" href="{{url_for('static', filename='img/favicon.png') }}" type="image/png" sizes="16x16">
 
@@ -39,9 +40,10 @@
             <div class="search-field d-flex align-items-center" id="search-field">
                 <table class=" ">
                     <tr>
-                        <td style="vertical-align:bottom; ">
-                            <i class="material-icons"
-                               style="color:#6A7284;margin-left: 4px;margin-right: 4px">search</i>
+                        <td style="vertical-align:bottom; padding-left: 4px; padding-right: 4px">
+                            <i class="bx bx-search bx-sm"
+                               style="color:#6A7284;"></i>
+
                         </td>
                         <td class="absorbing-column no-gutters">
                             <input name="query" id="query" class="col-12 text-field"
@@ -52,13 +54,14 @@
                         </td>
                         <td>
                             <div class="dropdown-button" id="drop-down-button-container">
-                                <span class="custom-badge"></span>
+                                <span style="display: none" class="custom-badge"></span>
 
                                 <button id="dropdownButton" onclick="toggleAdvancedSearchOption()" class="icon-button"
                                         type="button"
-                                        style="outline: none;text-align:center;border: none;"><i id="dropdown-menu-icon"
-                                                                                                 class="material-icons md-36"
-                                                                                                 style="color:#6A7284;">arrow_drop_down</i>
+                                        style="outline: none;text-align:center;border: none;">
+                                    <i id="dropdown-menu-icon" class="bx bxs-chevron-down-circle bx-sm"
+                                       style="color:#6A7284;"></i>
+
                                 </button>
                             </div>
 
@@ -80,27 +83,37 @@
                     <form id="advanced-search-form">
                         <div class="form-row form-group">
                             <div class="col">
-                                <label for="start-date-picker">Start date<span data-toggle="tooltip"
-                                                                               data-placement="right"
-                                                                               title="Search for tweets from this date."><i
-                                        class="material-icons md-24 inline-icon">help_outline</i></span></label>
+                                <label for="start-date-picker">
+                                    Start date
+                                    <span style="padding: 0" data-toggle="tooltip" data-placement="right"
+                                          title="Search for tweets from this date.">
+                                        <i class='bx bx-help-circle ' style='color:#747474; font-size: 18px'></i>
+                                    </span>
+                                </label>
                                 <input type="date" class="form-control" id="start-date-picker">
                             </div>
                             <div class="col">
-                                <label for="end-date-picker">End date <span data-toggle="tooltip"
-                                                                            data-placement="right"
-                                                                            title="Tweets will be searched till this date."><i
-                                        class="material-icons md-24 inline-icon">help_outline</i></span></label>
+                                <label for="end-date-picker">
+                                    End date
+                                    <span data-toggle="tooltip" data-placement="right"
+                                          title="Tweets will be searched till this date.">
+                                        <i class='bx bx-help-circle '
+                                           style='color:#747474; font-size: 18px'></i>
+                                    </span>
+                                </label>
                                 <input type="date" class="form-control" id="end-date-picker">
                             </div>
 
                         </div>
                         <div class="form-row form-group">
                             <div class="col">
-                                <label for="step-input">Step size<span data-toggle="tooltip"
-                                                                       data-placement="right"
-                                                                       title="(X-axis) Tweets will be searched in these steps. For ex. if 'weeks' option is selected, tweets will be searched by weeks timespan, until end date is reached."><i
-                                        class="material-icons md-24 inline-icon">help_outline</i></span></label>
+                                <label for="step-input">
+                                    Step size
+                                    <span data-toggle="tooltip" data-placement="right"
+                                          title="(X-axis) Tweets will be searched in these steps. For ex. if 'weeks' option is selected, tweets will be searched by weeks timespan, until end date is reached.">
+                                        <i class='bx bx-help-circle ' style='color:#747474; font-size: 18px'></i>
+                                    </span>
+                                </label>
                                 <select class="form-control" id="step-input">
                                     <option value="0">Days</option>
                                     <option selected value="1">Weeks</option>
@@ -109,10 +122,13 @@
                                 </select>
                             </div>
                             <div class="col">
-                                <label for="tweet-frequency">Tweet frequency in step <span data-toggle="tooltip"
-                                                                                           data-placement="right"
-                                                                                           title="(Y-axis) Number of maximum tweets to search in each steps. "><i
-                                        class="material-icons md-24 inline-icon">help_outline</i></span></label>
+                                <label for="tweet-frequency">
+                                    Tweet frequency in step
+                                    <span data-toggle="tooltip" data-placement="right"
+                                          title="(Y-axis) Number of maximum tweets to search in each steps. ">
+                                        <i class='bx bx-help-circle ' style='color:#747474; font-size: 18px'></i>
+                                    </span>
+                                </label>
                                 <input type="number" class="form-control" id="tweet-frequency">
                             </div>
                         </div>
@@ -131,16 +147,28 @@
 
 </nav>
 <div class="container-fluid">
-    <div style="display: none" class="sidebar navbar-custom">
-        <a href="#home" class="menu-selected"><i class="material-icons md-36">home</i></a>
-        <a href="#services"><i class="material-icons md-36">watch_later</i></a>
-        <a href="#clients"><i class="material-icons md-36">person</i></a>
-        <a href="#contact" class="bottom"><i class="material-icons md-36">settings</i></a>
+    <div style="display: block" class="sidebar navbar-custom">
+        <!--        <i class="material-icons md-36">home</i>-->
+        <!--        <i class="material-icons md-36">person</i>-->
+        <!--        <i class="material-icons md-36">watch_later</i>-->
+        <!--        <i class="material-icons md-36">settings</i>-->
+        <a href="#home" class="menu-selected">
+            <i class='bx bxs-home bx-sm'></i>
+
+        </a>
+        <a href="#profile"><i class='bx bxs-user'></i>
+        </a>
+        <a href="#history">
+            <i class='bx bx-history bx-sm'></i>
+        </a>
+        <a href="#settings" class="bottom">
+            <i class='bx bxs-cog bx-sm'></i>
+        </a>
     </div>
 
     <div class="main-content">
         <div style="display: none" id="loading-content" class="col-12 h-100">
-            <div style="height: 50%!important;" class="row" >
+            <div style="height: 50%!important;" class="row">
                 <div class="col-6 d-flex offset-3 justify-content-center align-items-end">
                     <lottie-player class="" id="box-animation"
                                    src="https://assets2.lottiefiles.com/private_files/lf30_CxKW0a.json"
@@ -174,7 +202,7 @@
                 </div>
             </div>
         </div>
-        <div style="display: none" id="content">
+        <div style="display: block" id="content">
             <div class="row marginal ">
                 <div class="col">
                     <div class="card custom-cards">
@@ -182,8 +210,9 @@
                             <div class="row no-gutters d-flex align-items-center ">
                                 <div class="col-md-4 d-flex justify-content-center">
                                     <div class="total-dot">
-                                        <i class="material-icons md-36 "
-                                           style="color: #11C8FC">all_inclusive</i>
+                                        <!--                                        <i class="material-icons md-36 "-->
+                                        <!--                                           style="color: #11C8FC">all_inclusive</i>-->
+                                        <i class='bx bx-infinite bx-sm' style="color: #11C8FC"></i>
                                     </div>
                                 </div>
                                 <div class="col-md-8">
@@ -200,8 +229,9 @@
                             <div class="row no-gutters d-flex align-items-center ">
                                 <div class="col-md-4 d-flex justify-content-center">
                                     <div class="dot">
-                                        <i class="material-icons md-36 "
-                                           style="color: #4981FD">trending_up</i>
+                                        <!--                                        <i class="material-icons md-36 "-->
+                                        <!--                                           style="color: #4981FD">trending_up</i>-->
+                                        <i class='bx bx-trending-up bx-sm' style="color: #4981FD; padding-top: 2px"></i>
                                     </div>
                                 </div>
                                 <div class="col-md-8">
@@ -218,8 +248,9 @@
                             <div class="row no-gutters d-flex align-items-center ">
                                 <div class="col-md-4 d-flex justify-content-center">
                                     <div class="red-dot">
-                                        <i class="material-icons md-36 "
-                                           style="color: #F1075E">trending_down</i>
+                                        <!--                                        <i class="material-icons md-36 "-->
+                                        <!--                                           style="color: #F1075E">trending_down</i>-->
+                                        <i class='bx bx-trending-down bx-sm' style="color: #F1075E"></i>
                                     </div>
                                 </div>
                                 <div class="col-md-8">
@@ -236,8 +267,9 @@
                             <div class="row no-gutters d-flex align-items-center ">
                                 <div class="col-md-4 d-flex justify-content-center">
                                     <div class="grey-dot">
-                                        <i class="material-icons md-36 "
-                                           style="color: rgba(104, 104, 104, 100);">trending_flat</i>
+                                        <!--                                        <i class="material-icons md-36 "-->
+                                        <!--                                           style="color: rgba(104, 104, 104, 100);">trending_flat</i>-->
+                                        <i class='bx bx-arrow-back bx-rotate-180 bx-sm' style='color:#686868'></i>
                                     </div>
                                 </div>
                                 <div class="col-md-8">
@@ -256,7 +288,11 @@
                 <div class="col-7">
                     <div class="card custom-cards">
                         <div class="card-header">
-                            <h5><i class="material-icons card-header-icon">timeline</i>Overview</h5>
+                            <h5>
+                                <!--                                <i class="material-icons card-header-icon">timeline</i>-->
+                                <i class='bx bx-line-chart bx-sm card-header-icon '></i>
+                                Overview
+                            </h5>
                         </div>
                         <div class="card-body">
 
@@ -269,7 +305,12 @@
                 <div class="col-5">
                     <div class="card custom-cards">
                         <div class="card-header">
-                            <h5><i class="material-icons card-header-icon">pie_chart</i>Top 10 words</h5>
+                            <h5>
+                                <!--                                <i class="material-icons card-header-icon">pie_chart</i>-->
+                                <i class='bx bxs-doughnut-chart bx-sm card-header-icon'></i>
+
+                                Top 10 words
+                            </h5>
                         </div>
                         <div class="card-body ">
                             <div id="topWords" class="container">
@@ -284,7 +325,12 @@
                 <div class="col-4">
                     <div class="card custom-cards">
                         <div class="card-header">
-                            <h5><i class="material-icons card-header-icon">link</i>Top Links</h5>
+                            <h5>
+                                <!--                                <i class="material-icons card-header-icon">link</i>-->
+                                <i class='bx bx-link-alt bx-sm card-header-icon'></i>
+
+                                Top Links
+                            </h5>
                         </div>
                         <ul class="list-group list-group-flush" id="link-list-id">
 

@@ -63,13 +63,13 @@ h5 {
 
 .sidebar a:hover {
     color: #100C41;
-    background-color: red;
+    background-color: #DEE2EC;
 }
 
 .main-content {
     height: 100vh;
 
-    /*margin-left: 80px; !* Same as the width of the sidenav *!*/
+    margin-left: 80px; /* Same as the width of the sidenav */
     padding: 80px 20px 10px;
 }
 
@@ -126,8 +126,8 @@ h5 {
 
 .card-header-icon {
     vertical-align: middle;
-    color: #343436;
-    padding: 0 8px 0 0;
+    color: #4f5663;
+
 }
 
 .inline-icon {
@@ -305,17 +305,24 @@ input:-webkit-autofill:active {
 }
 
 .dot {
-    height: 36px;
-    width: 36px;
+    height: 32px;
+    width: 32px;
     background-color: rgba(73, 129, 253, 0.27);
     border-radius: 50%;
     display: inline-block;
     padding: 4px;
 }
 
+.card-header {
+    background: white;
+    border-radius: inherit !important;
+    border-bottom: 1px solid #e2e2e2 !important;
+    color: #3a3d49;
+    padding: 16px 20px!important;
+}
 .total-dot {
-    height: 36px;
-    width: 36px;
+    height: 32px;
+    width: 32px;
     background-color: rgba(86, 217, 254, 0.27);
     border-radius: 50%;
     display: inline-block;
@@ -323,8 +330,8 @@ input:-webkit-autofill:active {
 }
 
 .red-dot {
-    height: 36px;
-    width: 36px;
+    height: 32px;
+    width: 32px;
     background-color: rgba(241, 7, 94, 0.27);
     border-radius: 50%;
     display: inline-block;
@@ -332,8 +339,8 @@ input:-webkit-autofill:active {
 }
 
 .grey-dot {
-    height: 36px;
-    width: 36px;
+    height: 32px;
+    width: 32px;
     background-color: rgba(104, 104, 104, 0.27);
     border-radius: 50%;
     display: inline-block;

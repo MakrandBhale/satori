@@ -1,3 +1,4 @@
+window.completedJobList = [];
 window.total = 0;
 window.posCount = 0;
 window.negCount = 0;
@@ -20,13 +21,16 @@ class PieChart {
         //console.log(this.getTopFive())
     }
 
-    getTopFive() {
+    getTopFiveWords() {
         this.sortedMap = new Map([...this.pieData.entries()].sort((a, b) => b[1] - a[1]));
         //console.log(this.sortedMap);
         let temp = this.sortedMap.entries();
         let topFive = [];
         for (let i = 0; i < 5; i++) {
-            topFive.push(temp.next().value);
+            //console.log(temp.next().value)
+            if (temp.next().value !== undefined) {
+                topFive.push(temp.next().value);
+            }
         }
         return topFive;
     }
@@ -115,6 +119,8 @@ function wipeMainChart() {
     window.posCount = 0;
     window.negCount = 0;
     window.neutralCount = 0;
+    window.completedJobList = [];
+    window.total_response = [];
     //console.log("indicators reset")
     //console.log(total + window.posCount + window.negCount + window.neutralCount);
     if (window.mainChart !== undefined) {
@@ -141,17 +147,24 @@ function loadChart(response) {
 
     let positive = [], negative = [], neutral = [];
     let dates = [];
-    let date = new Date(parseFloat(datalist.name) * 1000);
-    let options = {month: 'long', day: 'numeric', year: 'numeric'};
-    let formatted_date = date.toLocaleDateString("en-US", options);
-    positive.push(datalist.positive);
-    window.posCount = window.posCount + datalist.positive;
-    negative.push(datalist.negative);
-    window.negCount = window.negCount + datalist.negative;
-    neutral.push(datalist.neutral);
-    window.neutralCount = window.neutralCount + datalist.neutral;
-    dates.push(formatted_date);
-    window.total = datalist.total + window.total;
+
+
+    for (let i = 0; i < datalist.length; i++) {
+        let date = new Date(parseFloat(datalist[i].name) * 1000);
+        let options = {month: 'long', day: 'numeric', year: 'numeric'};
+        let formatted_date = date.toLocaleDateString("en-US", options);
+        dates.push(formatted_date);
+
+        positive.push(datalist[i].positive);
+        window.posCount = window.posCount + datalist[i].positive;
+        negative.push(datalist[i].negative);
+        window.negCount = window.negCount + datalist[i].negative;
+        neutral.push(datalist[i].neutral);
+        window.neutralCount = window.neutralCount + datalist[i].neutral;
+
+        window.total = datalist[i].total + window.total;
+    }
+
 
     setupIndicators();
     /*positive.reverse();
@@ -227,18 +240,18 @@ function setupLinkFrequencyList(linkFreqDist) {
 
 let pieChart = new PieChart();
 
-function plotWordFrequencyChart(fragmented_freqdist) {
+function plotWordFrequencyChart(freqDist) {
     if (window.wordCloudChart !== undefined) {
         window.wordCloudChart.destroy();
         window.wordCloudChart = undefined;
     }
     let freqChart = document.getElementById('wordFrequencyChart').getContext('2d');
     //console.log("Pie chart below")
-    pieChart.addData(fragmented_freqdist);
-    let freqDist = pieChart.getTopFive();
+    //pieChart.addData(fragmented_freqdist);
     let wordList = []
     let frequency = []
     for (let i = 0; i < freqDist.length; i++) {
+        //console.log("Freq dist size : " + freqDist);
         wordList.push(freqDist[i][0]);
         frequency.push(freqDist[i][1]);
     }
@@ -247,9 +260,10 @@ function plotWordFrequencyChart(fragmented_freqdist) {
         labels: wordList,
         datasets: [
             {
-                backgroundColor: ['#0000FF', '#0066FF', '#0099FF', '#00CCFF', '#00FFFF', '#4981FD', '#ffa733', '#ffcf33', '#ffee33', '#76ff03'],
+                backgroundColor: ['#4d4dff', '#0099FF', '#00CCFF', '#00FFFF', '#89CFF0', '#ffa733', '#ffcf33', '#ffee33', '#76ff03'],
                 fill: true,
                 data: frequency,
+                pointStyle: 'circle',
                 borderWidth: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
             }
         ]
@@ -265,7 +279,8 @@ function plotWordFrequencyChart(fragmented_freqdist) {
             legend: {
                 display: true,
                 position: 'right',
-                align: 'start'
+                align: 'start',
+                usePointStyle: true,
 
             }
         }
@@ -300,18 +315,15 @@ function plotMainChart(positive, negative, neutral, dates) {
                     label: 'Positive',
                     data: positive,
                     borderColor: '#4981FD',
-                    pointBackgroundColor: 'white',
+
                     radius: 4,
-                    pointBorderWidth: 4,
                     fill: true,
-                    backgroundColor: 'rgba(73,129,253,0.1)'
+                    backgroundColor: 'rgba(73,129,253,0.3)'
                 },
                 {
                     label: 'Negative',
                     data: negative,
                     borderColor: '#F1075E',
-                    pointBackgroundColor: 'white',
-                    pointBorderWidth: 4,
                     radius: 4,
                     fill: true,
                     backgroundColor: 'rgba(241,7,94,0.1)'
@@ -320,15 +332,20 @@ function plotMainChart(positive, negative, neutral, dates) {
                     label: 'Neutral',
                     data: neutral,
                     borderColor: 'rgb(57, 62, 70, 0.6)',
-                    pointBackgroundColor: 'white',
-                    pointBorderWidth: 4,
+
                     radius: 4,
                     backgroundColor: greyGradient,
                     fill: false
                 }
             ]
         },
-        options: {}
+        options: {
+            legend: {
+                labels: {
+                    usePointStyle: true,
+                }
+            }
+        }
     })
 }
 
@@ -360,7 +377,7 @@ function toggleAdvancedSearchOption() {
 
 function showAdvanceSearchOptions() {
 
-    $("#dropdown").toggle(1000);
+    $("#dropdown").toggle();
     addShadow()
     let dropdownMenuIcon = document.getElementById('dropdown-menu-icon');
     dropdownMenuIcon.classList.add('rotate-up');
@@ -368,7 +385,7 @@ function showAdvanceSearchOptions() {
 }
 
 function hideAdvancedSearchOptions() {
-    $("#dropdown").hide(100);
+    $("#dropdown").hide();
     let dropdownMenuIcon = document.getElementById('dropdown-menu-icon');
     dropdownMenuIcon.classList.remove('rotate-up');
     dropdownMenuIcon.classList.add('rotate-down');
@@ -425,18 +442,15 @@ function sendRequestForId(taskId) {
         method: 'POST'
     })
         .done((res) => {
-            if (res.data.task_res === "") {
-                setTimeout(function () {
-                    sendRequestForId(res.data.task_id);
-
-                }, 1000);
-            } else {
+            //console.log(res.data);
+            if (res.data.task_status === "finished") {
+                window.completedJobList.push(res.data.task_id);
                 let index = window.jobList.indexOf(res.data.task_id);
                 if (index !== -1) window.jobList.splice(index, 1);
                 window.total_response.push(res.data.task_res)
-                console.log("job-list aray size" + window.jobList.length);
-                console.log("old value " + window.old_value);
-                console.log('pcg ' + window.pcg);
+                //console.log("job-list aray size" + window.jobList.length);
+                //console.log("old value " + window.old_value);
+                //console.log('pcg ' + window.pcg);
                 window.pcg = Math.floor(window.total_response.length / window.total_job_count * 100);
 
                 if (window.old_value <= window.pcg) {
@@ -446,10 +460,18 @@ function sendRequestForId(taskId) {
                 if (window.jobList.length === 0) {
                     //window.pcg = 0;
                     //window.old_value = 0;
-                    postprocessing();
+                    console.log("making final request call");
+                    makeFinalCall();
+                    //postprocessing();
                     //console.log(window.total_response)
                 }
                 //loadChart(res.data.task_res)
+
+            } else {
+                setTimeout(function () {
+                    sendRequestForId(res.data.task_id);
+
+                }, 1000);
             }
         })
         .fail((err) => {
@@ -457,34 +479,50 @@ function sendRequestForId(taskId) {
         });
 }
 
-function postprocessing() {
-    let timestampList = [];
-    let responseMap = new Map();
-
-    //console.log(typeof window.total_response);
-    //console.log(window.total_response);
-    window.total_response.sort(function (a, b) {
-        return new Date(b.timeFragment.name) - new Date(b.timeFragment.name);
-    })
-    /*for(let i = 0; i<window.total_response.length;i++){
-        let temp = window.total_response[i];
-        let timestamp = temp.timeFragment[0].name;
-        console.log(typeof timestamp);
-        timestampList.push(timestamp);
-        responseMap.set(timestamp, temp);
-    }*/
-    console.log(window.total_response);
-    for (let i = 0; i < window.total_response.length; i++) {
-        loadChart(window.total_response[i]);
+function makeFinalCall() {
+    let xmlHttpRequest = new XMLHttpRequest();
+    xmlHttpRequest.onreadystatechange = function () {
+        if (this.readyState === 4 && this.status === 200) {
+            console.log(JSON.parse(this.responseText));
+            loadChart(JSON.parse(this.responseText));
+            showResultPage();
+        }
+        //console.log(this.responseText);
     }
-    window.total_response = [];
-    setTimeout(function(){
-        $("#loading-content").hide();
-        $("#content").show();
-    },2500);
-
-
+    xmlHttpRequest.open("POST", "/get_results/");
+    xmlHttpRequest.setRequestHeader("Content-Type", "application/json;charset=UTF-8");
+    xmlHttpRequest.send(JSON.stringify(window.completedJobList));
 }
+
+
+// function postprocessing() {
+//     let timestampList = [];
+//     let responseMap = new Map();
+//
+//     //console.log(typeof window.total_response);
+//     //console.log(window.total_response);
+//     window.total_response.sort(function (a, b) {
+//         return new Date(b.timeFragment.name) - new Date(b.timeFragment.name);
+//     })
+//     /*for(let i = 0; i<window.total_response.length;i++){
+//         let temp = window.total_response[i];
+//         let timestamp = temp.timeFragment[0].name;
+//         console.log(typeof timestamp);
+//         timestampList.push(timestamp);
+//         responseMap.set(timestamp, temp);
+//     }*/
+//     //console.log(window.total_response);
+//     for (let i = 0; i < window.total_response.length; i++) {
+//         loadChart(window.total_response[i]);
+//     }
+//     window.total_response = [];
+//     setTimeout(function () {
+//         $("#loading-content").hide();
+//         $("#content").show();
+//     }, 2500);
+//
+//
+// }
 
 const updateProgressBar = function () {
 
@@ -495,15 +533,13 @@ const updateProgressBar = function () {
         //document.getElementById('progress-bar').classList.remove("progress-bar-striped", "progress-bar-animated")
         window.old_value++;
         window.requestAnimationFrame(updateProgressBar);
-    } else {
-        //document.getElementById('progress-bar').classList.add("progress-bar-striped", "progress-bar-animated")
     }
-    if(window.old_value === 100){
+    if (window.old_value >= 100) {
         startDoneAnimation();
     }
 }
 
-function startBoxAnimation(){
+function startBoxAnimation() {
     $("#box-animation").show();
     $("#done-animation").hide();
 }
@@ -511,4 +547,11 @@ function startBoxAnimation(){
 function startDoneAnimation() {
     $("#box-animation").hide()
     $("#done-animation").show();
+}
+
+function showResultPage() {
+    setTimeout(function () {
+        $("#loading-content").hide();
+        $("#content").show();
+    }, 2500)
 }

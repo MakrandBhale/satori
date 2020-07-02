@@ -13,27 +13,27 @@ DAY, WEEK = 0, 1
 MONTH, YEAR = 3, 4
 
 
-def analyze(tweets):
-    time_fragment_list = []
-    object_list = []
-    for tweet in tweets:
-        text = tweet.text
-        blob = TextBlob(text)
-        tweet.add_emotion(blob.polarity, blob.subjectivity)
-        time_fragment_list.append(tweet)
-    object_list.append(time_fragment_list)
-    return object_list
 # def analyze(tweets):
+#     time_fragment_list = []
 #     object_list = []
-#     for time_fragment in tweets:
-#         time_fragment_list = []
-#         for tweet in time_fragment:
-#             text = tweet.text
-#             blob = TextBlob(text)
-#             tweet.add_emotion(blob.polarity, blob.subjectivity)
-#             time_fragment_list.append(tweet)
-#         object_list.append(time_fragment_list)
+#     for tweet in tweets:
+#         text = tweet.text
+#         blob = TextBlob(text)
+#         tweet.add_emotion(blob.polarity, blob.subjectivity)
+#         time_fragment_list.append(tweet)
+#     object_list.append(time_fragment_list)
 #     return object_list
+def analyze(tweets):
+    object_list = []
+    for time_fragment in tweets:
+        time_fragment_list = []
+        for tweet in time_fragment:
+            text = tweet.text
+            blob = TextBlob(text)
+            tweet.add_emotion(blob.polarity, blob.subjectivity)
+            time_fragment_list.append(tweet)
+        object_list.append(time_fragment_list)
+    return object_list
 
 
 def count_sentiment(tweets):
@@ -63,8 +63,8 @@ def count_sentiment(tweets):
             old_date = undef_date
 
         time_fragment = TimeFragment(positive_sentiment, negative_sentiment, neutral, total, date)
-        # result.append(time_fragment.serialize())
-    return time_fragment.serialize()
+        result.append(time_fragment.serialize())
+    return result
 
 
 def cleanTweets(tweet):
