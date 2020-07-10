@@ -27,12 +27,12 @@ def analyze(tweets):
     object_list = []
     for time_fragment in tweets:
         time_fragment_list = []
-        for tweet in time_fragment:
+        for tweet in time_fragment[1]:
             text = tweet.text
             blob = TextBlob(text)
             tweet.add_emotion(blob.polarity, blob.subjectivity)
             time_fragment_list.append(tweet)
-        object_list.append(time_fragment_list)
+        object_list.append([time_fragment[0], time_fragment_list])
     return object_list
 
 
@@ -44,7 +44,7 @@ def count_sentiment(tweets):
         negative_sentiment = 0
         neutral = 0
         total = 0
-        for tweet in tweet_list:
+        for tweet in tweet_list[1]:
             if tweet.polarity > 0:
                 positive_sentiment = positive_sentiment + 1
             elif tweet.polarity < 0:
@@ -52,15 +52,15 @@ def count_sentiment(tweets):
             else:
                 neutral = neutral + 1
             total = total + 1
-        date = ""
-        if len(tweet_list) > 0:
-            date = str(tweet_list[0].date.timestamp())
-            old_date = tweet_list[0].date
-        else:
-            # TODO : change undefined time delta *IMP*
-            undef_date = old_date - datetime.timedelta(days=7)
-            date = (undef_date.timestamp())
-            old_date = undef_date
+        date = tweet_list[0]
+        # if len(tweet_list) > 0:
+        #     date = str(tweet_list[0].date.timestamp())
+        #     old_date = tweet_list[0].date
+        # else:
+        #     # TODO : change undefined time delta *IMP*
+        #     undef_date = old_date - datetime.timedelta(days=7)
+        #     date = (undef_date.timestamp())
+        #     old_date = undef_date
 
         time_fragment = TimeFragment(positive_sentiment, negative_sentiment, neutral, total, date)
         result.append(time_fragment.serialize())
@@ -86,9 +86,12 @@ def cleanTweets(tweet):
 def wordCloud(tweets):
     corpus = []
     links_corpus = []
-
+    hashtag_corpus = []
     for tweet_list in tweets:
-        for tweet in tweet_list:
+        # tweet_list[1] is written because the tweets object is an array of array where 0th index contains the date
+        # for which the tweets were searched and 1st index contains the list of the tweets searched.
+        for tweet in tweet_list[1]:
+            hashtag_corpus.extend(tweet.hashtags.split())
             links_corpus.extend(url_extractor(tweet.text))
             tweet.text = url_cleaner(tweet.text)
             list_of_words = cleanTweets(tweet)
@@ -96,15 +99,17 @@ def wordCloud(tweets):
 
     cloud = nltk.FreqDist(corpus).most_common(5)
     link_cloud = nltk.FreqDist(links_corpus).most_common(10)
+    hashtag_cloud = nltk.FreqDist(hashtag_corpus).most_common(10)
     # print(link_cloud)
-    return [cloud, link_cloud]
+    return [cloud, link_cloud, hashtag_cloud]
 
 
 def compile_result(tweets):
     # tweets.sort(key=lambda r: r.date)
     freqDist = wordCloud(tweets)
 
-    response = Response(count_sentiment(tweets), freqDist[0], freqDist[1], '[]')
+    # freqDist is an array of word clouds of 0: top words, 1: top links, 2: top hashtags
+    response = Response(count_sentiment(tweets), freqDist[0], freqDist[1], freqDist[2])
     return response.serialize()
 
 

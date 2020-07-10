@@ -8,6 +8,7 @@ from rq import Queue
 from redis import Redis
 
 redis_conn = Redis()
+step_count = 7
 
 try:
     nltk.download('punkt', download_dir='/opt/python/current/app')
@@ -20,8 +21,13 @@ app = Flask(__name__, template_folder="templates")
 MONTH = 0
 
 
+# @app.route('/', methods=['GET'])
+# def home():
+#     return render_template('search.html', response='')
+
+
 @app.route('/', methods=['GET'])
-def home():
+def search_result():
     return render_template('index.html', response='')
 
 
@@ -39,6 +45,7 @@ def scrape_data():
 
     # processed_tweets = preprocessor.analyze(tweets)
     # response = preprocessor.compile_result(processed_tweets)
+    # return render_template('index.html', response='')
     return app.response_class(response=json.dumps(job_list),
                               status=200,
                               mimetype='application/json')
@@ -84,6 +91,10 @@ def get_result():
         # return app.response_class(response=jsonify(response),
         #                           status=200,
         #                           mimetype='application/json')
+    else:
+        return app.response_class(response=json.dumps(ErrorResponse(200, "Not all jobs are complete.").serialize()),
+                                  status=200,
+                                  mimetype='application/json')
 
 
 def post_processing(finished_job_list):

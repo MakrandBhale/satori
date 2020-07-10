@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Search</title>
+    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js"
+        integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo"
+        crossorigin="anonymous"></script>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css"
+          integrity="sha384-9aIt2nRpC12Uk9gS9baDl411NQApFmC26EwAOH8WgZl5MYYxFfc+NcPb1dKGj7Sk" crossorigin="anonymous">
+    <link rel="stylesheet" href="{{url_for('static', filename='css/search-page-styles.css') }}"/>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
+    <link href='https://cdn.jsdelivr.net/npm/boxicons@2.0.5/css/boxicons.min.css' rel='stylesheet'>
+    <link rel="icon" href="{{url_for('static', filename='img/favicon.png') }}" type="image/png" sizes="16x16">
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500&display=swap" rel="stylesheet">
+</head>
+<body>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.5.1/jquery.min.js"
+        integrity="sha256-9/aliU8dGd2tb6OSsuzixeV4y/faTqgFtohetphbbj0=" crossorigin="anonymous"></script>
+
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/js/bootstrap.min.js"
+        integrity="sha384-OgVRvuATP1z7JjHLkuOU7Xw704+h835Lr+6QL9UvYjZE3Ipu6Tp75j7Bh/kR0JKI"
+        crossorigin="anonymous"></script>
+
+<div class="container h-100">
+    <div class="row h-100 justify-content-center align-items-center">
+        <div class="col-lg-6 col-md-10 ">
+            <div class="row">
+<!--                <div class="col-11 text-center">-->
+<!--                    <h1>Analyse trends & Sentiment</h1>-->
+<!--                </div>-->
+            </div>
+            <form method="POST" class="" id="search" style="margin-bottom: 6px">
+                <div class="row row-marginal">
+                    <div class="col-12  d-flex align-items-center">
+                        <table class=" search-field" id="search-field">
+                            <tr>
+                                <td valign="center" style="padding-top:8px;padding-left: 8px; padding-right: 6px;">
+                                    <i class="bx bx-search bx-sm"
+                                       style="color:#6A7284;"></i>
+
+                                </td>
+                                <td class="absorbing-column no-gutters" style="width:100%">
+                                    <input name="query" id="query" class="col-12 text-field"
+                                           placeholder="Search with keyword or account name" autocomplete="off">
+
+                                </td>
+                            </tr>
+                        </table>
+                        <div class="" style="margin-left: 12px">
+                            <button type="button" class="rectangle-icon-button" data-toggle="collapse"
+                                    data-target="#collapseExample" aria-expanded="false"
+                                    aria-controls="collapseExample">
+                                <i class="bx bx-filter bx-sm"
+                                   style="color:#6A7284;"></i>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+                <div class="row row-marginal">
+                    <div class="col-12 collapse" id="collapseExample">
+                        <div class="form-row form-group">
+                            <div class="col hover-class">
+                                <label for="start-date-picker">
+                                    From
+                                    <span style="padding: 0" data-toggle="tooltip" data-placement="right"
+                                          title="Search for tweets from this date.">
+                                        <i class='bx bx-help-circle hides' style='color:#747474; font-size: 18px'></i>
+                                    </span>
+                                </label>
+                                <input type="date" class="custom-input form-control" id="start-date-picker">
+                            </div>
+                            <div class="col hover-class">
+                                <label for="end-date-picker">
+                                    To
+                                    <span data-toggle="tooltip" data-placement="right"
+                                          title="Tweets will be searched till this date.">
+                                        <i class='bx bx-help-circle hides'
+                                           style='color:#747474; font-size: 18px'></i>
+                                    </span>
+                                </label>
+                                <input  type="date" class="custom-input form-control" id="end-date-picker">
+                            </div>
+
+                        </div>
+                        <div class="form-row form-group">
+                            <div class="col hover-class">
+                                <label for="step-input">
+                                    Step size
+                                    <span data-toggle="tooltip" data-placement="right"
+                                          title="(X-axis) Tweets will be searched in these steps. For ex. if 'weeks' option is selected, tweets will be searched by weeks timespan, until end date is reached.">
+                                        <i class='bx bx-help-circle hides' style='color:#747474; font-size: 18px'></i>
+                                    </span>
+                                </label>
+                                <select class="custom-input form-control" id="step-input">
+                                    <option value="0">Days</option>
+                                    <option selected value="1">Weeks</option>
+                                    <option value="2">15 days</option>
+                                    <option value="3">Month</option>
+                                </select>
+                            </div>
+                            <div class="col hover-class">
+                                <label for="tweet-frequency">
+                                    Tweet frequency in step
+                                    <span data-toggle="tooltip" data-placement="right"
+                                          title="(Y-axis) Number of maximum tweets to search in each steps. ">
+                                        <i class='bx bx-help-circle hides' style='color:#747474; font-size: 18px'></i>
+                                    </span>
+                                </label>
+                                <input type="number" class="custom-input form-control" id="tweet-frequency">
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+                <div class="row row-marginal ">
+                    <div class="col col-11 text-center">
+                        <button type="button" onclick="search()" class="material-button align-self-center">Search</button>
+                    </div>
+                </div>
+                <!--        <button onclick="return loadDoc()" class="btn btn-outline-success my-2 my-sm-0">Submit</button>-->
+            </form>
+        </div>
+    </div>
+</div>
+<script type="text/javascript" src="{{url_for('static', filename='js/communicator.js') }}"></script>
+<script type="text/javascript">
+    $("#query").on("keydown", function (e) {
+        if (e.keyCode === 13) {  //checks whether the pressed key is "Enter"
+            //alert('called')
+            search();
+        }
+    });
+    $(document).ready(function () { // Wait until document is fully parsed
+        $("#search").on('submit', function (e) {
+            e.preventDefault();
+        });
+        $("#advanced-search-form").on('submit', function (e) {
+            e.preventDefault();
+        });
+    });
+
+    $(function () {
+        $('[data-toggle="tooltip"]').tooltip()
+    })
+</script>
+</body>
+</html>

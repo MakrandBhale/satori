@@ -44,7 +44,7 @@ function loadDoc() {
     wipeMainChart();
     $("#loader").show();
     $("#drop-down-button-container").hide();
-    hideAdvancedSearchOptions();
+    //hideAdvancedSearchOptions();
     let xhttp = new XMLHttpRequest();
     xhttp.onreadystatechange = function () {
         let dataList;
@@ -59,6 +59,7 @@ function loadDoc() {
             } else {
                 let errorResponse = JSON.parse(this.response);
                 alert(errorResponse.message);
+                showResultPage();
                 //console.log(this.response);
             }
             $("#loader").hide();
@@ -74,7 +75,7 @@ function loadDoc() {
 
 }
 
-hideAdvancedSearchOptions();
+//hideAdvancedSearchOptions();
 
 function prepareParameters() {
     let query = document.getElementById("query").value;
@@ -107,10 +108,10 @@ class TimeFragment {
 */
 
 function setupIndicators() {
-    document.querySelector("#positive-tweets-number").innerHTML = "<b>" + window.posCount + "</b>";
-    document.querySelector("#negative-tweets-number").innerHTML = "<b>" + window.negCount + "</b>";
-    document.querySelector("#neutral-tweets-number").innerHTML = "<b>" + window.neutralCount + "</b>";
-    document.querySelector("#total-tweets-number").innerHTML = "<b>" + window.total + "</b>";
+    document.querySelector("#positive-tweets-number").innerHTML = window.posCount;
+    document.querySelector("#negative-tweets-number").innerHTML = window.negCount;
+    document.querySelector("#neutral-tweets-number").innerHTML = window.neutralCount;
+    document.querySelector("#total-tweets-number").innerHTML = window.total;
 }
 
 
@@ -128,15 +129,27 @@ function wipeMainChart() {
         window.mainChart.destroy();
         window.mainChart = undefined;
     }
-    if (window.wordCloudChart) {
+    if (window.wordCloudChart !== undefined) {
         //console.log("word chart wiped");
         window.wordCloudChart.destroy();
         window.wordCloudChart = undefined;
+    }
+
+    if (window.hashtagCloudChart !== undefined) {
+        console.log(window.hashtagCloudChart);
+        window.hashtagCloudChart.destroy();
+        window.hashtagCloudChart = undefined;
     }
     pieChart = new PieChart();
     window.pcg = 0;
     window.old_value = 0;
     updateProgressBar();
+}
+
+function getProperDate(stringDate) {
+    let parts = stringDate.split('-');
+    let mydate = new Date(parts[0], parts[1] - 1, parts[2]);
+    return mydate.toDateString();
 }
 
 function loadChart(response) {
@@ -150,10 +163,11 @@ function loadChart(response) {
 
 
     for (let i = 0; i < datalist.length; i++) {
-        let date = new Date(parseFloat(datalist[i].name) * 1000);
-        let options = {month: 'long', day: 'numeric', year: 'numeric'};
-        let formatted_date = date.toLocaleDateString("en-US", options);
-        dates.push(formatted_date);
+        /*      old time conversion function when timestamp was sent instead of actual date string.
+                let date = new Date(parseFloat(datalist[i].name) * 1000);
+                let options = {month: 'long', day: 'numeric', year: 'numeric'};
+                let formatted_date = date.toLocaleDateString("en-US", options);*/
+        dates.push(getProperDate(datalist[i].name));
 
         positive.push(datalist[i].positive);
         window.posCount = window.posCount + datalist[i].positive;
@@ -187,6 +201,106 @@ function loadChart(response) {
 
     plotWordFrequencyChart(response.freqDist)
     setupLinkFrequencyList(response.linkFreqDist)
+    //setupHashtagChart(response.hashtagFreqDist);
+    setupHashtagFrequencyList(response.hashtagFreqDist)
+
+}
+
+function setupHashtagChart(hashtagFreqDist) {
+    if (window.hashtagCloudChart !== undefined) {
+        console.log(window.hashtagCloudChart);
+        window.hashtagCloudChart.destroy();
+        window.hashtagCloudChart = undefined;
+    }
+
+    let hashtagChartCanvas = document.getElementById('hashtagCloudChartCanvas').getContext('2d');
+    let hashtagList = [];
+    let freqList = [];
+
+    for (let i = 0; i < hashtagFreqDist.length; i++) {
+        hashtagList.push(hashtagFreqDist[i][0]);
+        freqList.push(hashtagFreqDist[i][1]);
+    }
+
+    let data = {
+        labels: hashtagList,
+        datasets: [
+            {
+                backgroundColor: ['#4d4dff', '#0099FF', '#00CCFF', '#00FFFF', '#89CFF0', '#ffa733', '#ffcf33', '#ffee33', '#76ff03'],
+                fill: true,
+                data: freqList,
+                pointStyle: 'circle',
+                borderWidth: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
+            }
+        ]
+    }
+
+    if (window.hashtagCloudChart) {
+        window.hashtagCloudChart.destroy();
+    }
+
+    window.hashtagCloudChart = new Chart(hashtagChartCanvas, {
+        type: 'polarArea',
+        data: data,
+        options: {
+            display: true,
+            position: 'right',
+            align: 'start',
+            usePointStyle: true,
+            defaultFontFamily: "'Roboto', sans-serif",
+            defaultFontSize: '24'
+        }
+    });
+}
+
+function prepareSafeHashtagURL(hashtag) {
+    return "https://twitter.com/search?q=" + encodeURIComponent(hashtag);
+}
+
+function setupHashtagFrequencyList(hashtagFreqDist) {
+    let hashtagList = [], frequency = [];
+
+    let parentList = document.getElementById("hashtag-list-id");
+    /* to refresh list for every query*/
+    parentList.innerHTML = "";
+    let collapsibleDiv = document.createElement("DIV");
+    collapsibleDiv.setAttribute("id", "remaining-hashtag-list");
+
+
+    for (let i = 0; i < hashtagFreqDist.length; i++) {
+        //hashtagList.push(hashtagFreqDist[i][0])
+        //frequency.push(hashtagFreqDist[i][1])
+        let hashtag = hashtagFreqDist[i][0];
+        let freq = hashtagFreqDist[i][1];
+        let textNode = document.createTextNode(hashtag);
+        let freqNode = document.createTextNode(freq);
+
+        let listItem = document.createElement("LI");
+        let badge = document.createElement("SPAN");
+        collapsibleDiv.classList.add("collapse");
+        badge.classList.add("badge", "badge-primary", "badge-pill");
+        //badge.classList.add("badge", "custom-highlighter");
+        badge.appendChild(freqNode);
+        listItem.classList.add("list-group-item", "d-flex", "justify-content-between", "align-items-center", "no-border-list", "list-group-item-action");
+        listItem.appendChild(textNode);
+        listItem.appendChild(badge);
+
+        listItem.addEventListener("click", function () {
+            window.open(prepareSafeHashtagURL(hashtag), "_blank");
+        })
+
+        if (i >= 5) {
+            /*if the list contains more than 5 elements add it to collapsible div*/
+            collapsibleDiv.appendChild(listItem)
+        } else {
+            parentList.appendChild(listItem)
+        }
+    }
+    /* tweak this 0 to hide the view all link*/
+    if (collapsibleDiv.childElementCount > 0) {
+        parentList.appendChild(collapsibleDiv);
+        $('#view-all-hashtag-button').show();
+    }
 }
 
 function setupLinkFrequencyList(linkFreqDist) {
@@ -281,7 +395,8 @@ function plotWordFrequencyChart(freqDist) {
                 position: 'right',
                 align: 'start',
                 usePointStyle: true,
-
+                defaultFontFamily: "'Roboto', sans-serif",
+                defaultFontSize: '24'
             }
         }
     });
@@ -316,16 +431,14 @@ function plotMainChart(positive, negative, neutral, dates) {
                     data: positive,
                     borderColor: '#4981FD',
 
-                    radius: 4,
-                    fill: true,
+                    fill: false,
                     backgroundColor: 'rgba(73,129,253,0.3)'
                 },
                 {
                     label: 'Negative',
                     data: negative,
                     borderColor: '#F1075E',
-                    radius: 4,
-                    fill: true,
+                    fill: false,
                     backgroundColor: 'rgba(241,7,94,0.1)'
                 },
                 {
@@ -343,10 +456,13 @@ function plotMainChart(positive, negative, neutral, dates) {
             legend: {
                 labels: {
                     usePointStyle: true,
+
                 }
             }
         }
     })
+    Chart.defaults.global.defaultFontFamily = "'Roboto', sans-serif";
+    Chart.defaults.global.defaultFontColor = "#3a3d49"
 }
 
 let specifiedElement = document.getElementById('dropdown');
@@ -359,18 +475,19 @@ let toggleOutsideDetectionListener = function (event) {
         isClickInside = true;
     }
     if (!isClickInside) {
-        hideAdvancedSearchOptions();
+        //hideAdvancedSearchOptions();
         removeShadow();
         //the click was outside the specifiedElement, do something
     }
 }
-document.addEventListener('click', toggleOutsideDetectionListener);
+
+//document.addEventListener('click', toggleOutsideDetectionListener);
 
 function toggleAdvancedSearchOption() {
     if ($("#dropdown").is(":visible")) {
-        hideAdvancedSearchOptions()
+        //hideAdvancedSearchOptions()
     } else {
-        showAdvanceSearchOptions()
+        //showAdvanceSearchOptions()
     }
 }
 
@@ -402,6 +519,22 @@ function removeShadow() {
 }
 
 let expanded = false;
+
+function expandHashtagListClicked() {
+    let viewAllLink = document.getElementById('viewAllHashtagLink');
+    let expandIcon = document.getElementById('expand-hashtag-icon');
+    if (!expanded) {
+        viewAllLink.innerText = "View Less";
+
+        expandIcon.classList.remove("rotate-down")
+        expandIcon.classList.add("rotate-up")
+    } else {
+        viewAllLink.innerText = "View All";
+        expandIcon.classList.add("rotate-down")
+        expandIcon.classList.remove("rotate-up")
+    }
+    expanded = !expanded;
+}
 
 function expandListClicked() {
     //console.log("clikcke")
@@ -553,5 +686,5 @@ function showResultPage() {
     setTimeout(function () {
         $("#loading-content").hide();
         $("#content").show();
-    }, 2500)
+    }, 1000)
 }

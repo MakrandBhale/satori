@@ -3,11 +3,8 @@ import GetOldTweets3 as got
 from ml import sanitizer
 import redis
 from rq import Queue
+from ml.step_count_generator import get_substraction_factor
 
-DAYS = 0
-WEEK = 1
-HALF_MONTH = 2
-MONTH = 3
 
 r = redis.Redis()
 q = Queue(connection=r)
@@ -21,13 +18,7 @@ def scrape(query, startDate, endDate, stepSize, frequency):
     # a substraction_factor decides the step to take to reach the end date.
     # a number is added to the begin date at every iteration. this number is substraction factor.
     # should have named addition factor (face-palm)
-    substraction_factor = 7
-    if stepSize == MONTH:
-        substraction_factor = 30
-    elif stepSize == HALF_MONTH:
-        substraction_factor = 15
-    elif stepSize == DAYS:
-        substraction_factor = 1
+    substraction_factor = get_substraction_factor(stepSize)
 
     while beginDate <= lastDate:
         # start from begin date and end when it get over it.
@@ -51,7 +42,7 @@ def scrape_tweet(query, begin_date, end_date, limit):
         .setMaxTweets(limit)
     tweets = got.manager.TweetManager.getTweets(tweet_criteria)
     # array of twit objects to json array
-    return sanitizer.wrap(tweets)
+    return [str(begin_date), sanitizer.wrap(tweets)]
 
 #
 # tweets = scrape("#blacklivesmatter")

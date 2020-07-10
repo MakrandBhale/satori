@@ -13,7 +13,7 @@
     <link href='https://cdn.jsdelivr.net/npm/boxicons@2.0.5/css/boxicons.min.css' rel='stylesheet'>
     <title>Hello, world!</title>
     <link rel="icon" href="{{url_for('static', filename='img/favicon.png') }}" type="image/png" sizes="16x16">
-
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500&display=swap" rel="stylesheet">
 </head>
 <body>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.5.1/jquery.min.js"
@@ -31,127 +31,15 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.9.3/Chart.min.js"></script>
 <script src="https://unpkg.com/@lottiefiles/lottie-player@0.4.0/dist/lottie-player.js"></script>
 
-<nav class="navbar fixed-top navbar-light navbar-custom justify-content-start no-gutters">
-    <a class="navbar-brand" href="#">
-        <img src="{{url_for('static', filename='img/favicon.png') }}" width="48" height="48" alt="">
-    </a>
-    <div class="col-5 offset-3 align-content-between ">
-        <form method="POST" class="" id="search" style="margin-bottom: 6px">
-            <div class="search-field d-flex align-items-center" id="search-field">
-                <table class=" ">
-                    <tr>
-                        <td style="vertical-align:bottom; padding-left: 4px; padding-right: 4px">
-                            <i class="bx bx-search bx-sm"
-                               style="color:#6A7284;"></i>
-
-                        </td>
-                        <td class="absorbing-column no-gutters">
-                            <input name="query" id="query" class="col-12 text-field"
-                                   placeholder="Search with keyword or account name" onfocus="addShadow()"
-                                   autocomplete="off"
-                            >
-
-                        </td>
-                        <td>
-                            <div class="dropdown-button" id="drop-down-button-container">
-                                <span style="display: none" class="custom-badge"></span>
-
-                                <button id="dropdownButton" onclick="toggleAdvancedSearchOption()" class="icon-button"
-                                        type="button"
-                                        style="outline: none;text-align:center;border: none;">
-                                    <i id="dropdown-menu-icon" class="bx bxs-chevron-down-circle bx-sm"
-                                       style="color:#6A7284;"></i>
-
-                                </button>
-                            </div>
-
-                        </td>
-                        <td>
-                            <div class="loader" id="loader" style="display: none; height: 36px;width: 36px"></div>
-                        </td>
-                    </tr>
-                </table>
-
-
-            </div>
-
-            <!--        <button onclick="return loadDoc()" class="btn btn-outline-success my-2 my-sm-0">Submit</button>-->
-        </form>
-        <div id="dropdown" class="row no-gutters" style=" display: none">
-            <div class=" col-12">
-                <div id="advanced-search-container" class="col-12">
-                    <form id="advanced-search-form">
-                        <div class="form-row form-group">
-                            <div class="col">
-                                <label for="start-date-picker">
-                                    Start date
-                                    <span style="padding: 0" data-toggle="tooltip" data-placement="right"
-                                          title="Search for tweets from this date.">
-                                        <i class='bx bx-help-circle ' style='color:#747474; font-size: 18px'></i>
-                                    </span>
-                                </label>
-                                <input type="date" class="form-control" id="start-date-picker">
-                            </div>
-                            <div class="col">
-                                <label for="end-date-picker">
-                                    End date
-                                    <span data-toggle="tooltip" data-placement="right"
-                                          title="Tweets will be searched till this date.">
-                                        <i class='bx bx-help-circle '
-                                           style='color:#747474; font-size: 18px'></i>
-                                    </span>
-                                </label>
-                                <input type="date" class="form-control" id="end-date-picker">
-                            </div>
-
-                        </div>
-                        <div class="form-row form-group">
-                            <div class="col">
-                                <label for="step-input">
-                                    Step size
-                                    <span data-toggle="tooltip" data-placement="right"
-                                          title="(X-axis) Tweets will be searched in these steps. For ex. if 'weeks' option is selected, tweets will be searched by weeks timespan, until end date is reached.">
-                                        <i class='bx bx-help-circle ' style='color:#747474; font-size: 18px'></i>
-                                    </span>
-                                </label>
-                                <select class="form-control" id="step-input">
-                                    <option value="0">Days</option>
-                                    <option selected value="1">Weeks</option>
-                                    <option value="2">15 days</option>
-                                    <option value="3">Month</option>
-                                </select>
-                            </div>
-                            <div class="col">
-                                <label for="tweet-frequency">
-                                    Tweet frequency in step
-                                    <span data-toggle="tooltip" data-placement="right"
-                                          title="(Y-axis) Number of maximum tweets to search in each steps. ">
-                                        <i class='bx bx-help-circle ' style='color:#747474; font-size: 18px'></i>
-                                    </span>
-                                </label>
-                                <input type="number" class="form-control" id="tweet-frequency">
-                            </div>
-                        </div>
-                        <div class="form-row justify-content-end">
-                            <div class="col">
-                                <button type="submit" onclick="loadDoc()" class="material-button float-right">Search
-                                </button>
-                            </div>
-                        </div>
-                    </form>
-                </div>
-            </div>
-        </div>
-    </div>
-
-
-</nav>
 <div class="container-fluid">
     <div style="display: block" class="sidebar navbar-custom">
         <!--        <i class="material-icons md-36">home</i>-->
         <!--        <i class="material-icons md-36">person</i>-->
         <!--        <i class="material-icons md-36">watch_later</i>-->
         <!--        <i class="material-icons md-36">settings</i>-->
+        <img src="{{url_for('static', filename='img/favicon.png') }}" width="32"
+             height="32" alt="">
+        <div class="divider"></div>
         <a href="#home" class="menu-selected">
             <i class='bx bxs-home bx-sm'></i>
 
@@ -203,8 +91,109 @@
             </div>
         </div>
         <div style="display: block" id="content">
+            <div class="row marginal justify-content-center">
+                <div class="col-12">
+                    <form method="POST" class="" id="search" style="margin-bottom: 6px">
+                        <div class="row row-marginal justify-content-center">
+                            <div class="col-lg-6 col-md-10  d-flex align-items-center">
+                                <table class=" search-field" id="search-field">
+                                    <tr>
+                                        <td valign="center"
+                                            style="padding-top:8px;padding-left: 8px; padding-right: 6px;">
+                                            <i class="bx bx-search bx-sm"
+                                               style="color:#6A7284;"></i>
+
+                                        </td>
+                                        <td class="absorbing-column no-gutters" style="width:100%">
+                                            <input name="query" id="query" class="col-12 text-field"
+                                                   placeholder="Search with keyword or account name" autocomplete="off">
+
+                                        </td>
+                                    </tr>
+                                </table>
+                                <div class="" style="margin-left: 12px">
+                                    <button type="button" class="rectangle-icon-button" data-toggle="collapse"
+                                            data-target="#collapseExample" aria-expanded="false"
+                                            aria-controls="collapseExample">
+                                        <i class="bx bx-filter bx-sm"
+                                           style="color:#6A7284;"></i>
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row row-marginal">
+                            <div class="col-12 collapse " id="collapseExample">
+                                <div class="form-row form-group">
+                                    <div class="col-lg-3 col-md-6 col-sm-12 hover-class">
+                                        <label for="start-date-picker">
+                                            From
+                                            <span style="padding: 0" data-toggle="tooltip" data-placement="right"
+                                                  title="Search for tweets from this date.">
+                                        <i class='bx bx-help-circle hides' style='color:#747474; font-size: 18px'></i>
+                                    </span>
+                                        </label>
+                                        <input type="date" class="custom-input form-control" id="start-date-picker">
+                                    </div>
+                                    <div class="col-lg-3 col-md-6 col-sm-12 hover-class">
+                                        <label for="end-date-picker">
+                                            To
+                                            <span data-toggle="tooltip" data-placement="right"
+                                                  title="Tweets will be searched till this date.">
+                                        <i class='bx bx-help-circle hides'
+                                           style='color:#747474; font-size: 18px'></i>
+                                    </span>
+                                        </label>
+                                        <input type="date" class="custom-input form-control" id="end-date-picker">
+                                    </div>
+                                    <div class="col-lg-3 col-md-6 col-sm-12 hover-class">
+                                        <label for="step-input">
+                                            Step size
+                                            <span data-toggle="tooltip" data-placement="right"
+                                                  title="(X-axis) Tweets will be searched in these steps. For ex. if 'weeks' option is selected, tweets will be searched by weeks timespan, until end date is reached.">
+                                        <i class='bx bx-help-circle hides' style='color:#747474; font-size: 18px'></i>
+                                    </span>
+                                        </label>
+                                        <select class="custom-input form-control" id="step-input">
+                                            <option value="0">Days</option>
+                                            <option selected value="1">Weeks</option>
+                                            <option value="2">15 days</option>
+                                            <option value="3">Month</option>
+                                        </select>
+                                    </div>
+                                    <div class="col-lg-3 col-md-6 col-sm-12 hover-class">
+                                        <label for="tweet-frequency">
+                                            Tweet frequency in step
+                                            <span data-toggle="tooltip" data-placement="right"
+                                                  title="(Y-axis) Number of maximum tweets to search in each steps. ">
+                                        <i class='bx bx-help-circle hides' style='color:#747474; font-size: 18px'></i>
+                                    </span>
+                                        </label>
+                                        <input type="number" class="custom-input form-control" id="tweet-frequency">
+                                    </div>
+                                </div>
+                                <div class="row row-marginal ">
+                                    <div class="col col-12 text-center justify-content-center">
+
+                                        <button type="button" onclick="loadDoc()"
+                                                class="material-button align-self-center">
+                                            Search
+                                        </button>
+                                        <div class="custom-control custom-control-inlinel custom-checkbox mr-sm-2">
+                                            <input type="checkbox" class="custom-control-input"
+                                                   id="customControlAutosizing">
+                                            <label class="custom-control-label" for="customControlAutosizing">Use this
+                                                filter for future searches</label>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <!--        <button onclick="return loadDoc()" class="btn btn-outline-success my-2 my-sm-0">Submit</button>-->
+                    </form>
+                </div>
+            </div>
             <div class="row marginal ">
-                <div class="col">
+                <div class="top-margin col-lg-2 col-md-3 col-sm-6 col-xs-6">
                     <div class="card custom-cards">
                         <div class="card-body" style="padding:12px 8px;">
                             <div class="row no-gutters d-flex align-items-center ">
@@ -216,14 +205,14 @@
                                     </div>
                                 </div>
                                 <div class="col-md-8">
-                                    <p class="card-text"><span id="total-tweets-number"><b>--</b></span><br>tweets
+                                    <p class="card-text"><span id="total-tweets-number" class="counter-number">--</span><br>tweets
                                         scraped</p>
                                 </div>
                             </div>
                         </div>
                     </div>
                 </div>
-                <div class="col">
+                <div class="top-margin col-lg-2 col-md-3 col-sm-6 col-xs-6">
                     <div class="card custom-cards">
                         <div class="card-body" style="padding:12px 8px;">
                             <div class="row no-gutters d-flex align-items-center ">
@@ -235,14 +224,15 @@
                                     </div>
                                 </div>
                                 <div class="col-md-8">
-                                    <p class="card-text"><span id="positive-tweets-number"><b>--</b></span><br>positive
+                                    <p class="card-text"><span id="positive-tweets-number"
+                                                               class="counter-number">--</span><br>positive
                                         tweets </p>
                                 </div>
                             </div>
                         </div>
                     </div>
                 </div>
-                <div class="col">
+                <div class="top-margin col-lg-2 col-md-3 col-sm-6 col-xs-6">
                     <div class="card custom-cards">
                         <div class="card-body" style="padding:12px 8px;">
                             <div class="row no-gutters d-flex align-items-center ">
@@ -254,14 +244,15 @@
                                     </div>
                                 </div>
                                 <div class="col-md-8">
-                                    <p class="card-text"><span id="negative-tweets-number"><b>--</b></span><br>negative
+                                    <p class="card-text"><span id="negative-tweets-number"
+                                                               class="counter-number">--</span><br>negative
                                         tweets </p>
                                 </div>
                             </div>
                         </div>
                     </div>
                 </div>
-                <div class="col">
+                <div class="top-margin col-lg-2 col-md-3 col-sm-6 col-xs-6">
                     <div class="card custom-cards">
                         <div class="card-body" style="padding:12px 8px 12px 4px;">
                             <div class="row no-gutters d-flex align-items-center ">
@@ -273,19 +264,18 @@
                                     </div>
                                 </div>
                                 <div class="col-md-8">
-                                    <p class="card-text"><span id="neutral-tweets-number"><b>--</b></span><br>neutral
+                                    <p class="card-text"><span id="neutral-tweets-number"
+                                                               class="counter-number">--</span><br>neutral
                                         tweets </p>
                                 </div>
                             </div>
                         </div>
                     </div>
                 </div>
-                <div class="col"></div>
-                <div class="col"></div>
 
             </div>
             <div class="row marginal">
-                <div class="col-7">
+                <div class="top-margin col-lg-7 col-md-12 col-sm-12">
                     <div class="card custom-cards">
                         <div class="card-header">
                             <h5>
@@ -302,7 +292,7 @@
                         </div>
                     </div>
                 </div>
-                <div class="col-5">
+                <div class="top-margin col-lg-5 col-md-12 col-sm-12">
                     <div class="card custom-cards">
                         <div class="card-header">
                             <h5>
@@ -322,13 +312,12 @@
             </div>
             <div class="row marginal">
 
-                <div class="col-4">
+                <div class="top-margin col-lg-4 col-md-12 col-sm-12">
                     <div class="card custom-cards">
                         <div class="card-header">
                             <h5>
                                 <!--                                <i class="material-icons card-header-icon">link</i>-->
                                 <i class='bx bx-link-alt bx-sm card-header-icon'></i>
-
                                 Top Links
                             </h5>
                         </div>
@@ -338,9 +327,34 @@
                         <div id="view-all-button" class="card-body text-right"
                              style="padding: 10px 8px; border-top: 1px solid rgba(0,0,0,.125);display: block;">
                             <a href="#" class="card-link " data-toggle="collapse" onclick="expandListClicked()"
-                               data-target="#remaining-list" style="color: #4981FD;font-weight: bold"><span
+                               data-target="#remaining-list" style="color: #4981FD;font-weight: 500"><span
                                     id="viewAllLink">View All</span>
                                 <i id="expand-icon" class="material-icons md-36 expand-more-icon"
+                                   style="color:#6A7284;">expand_more</i></a>
+
+                        </div>
+                    </div>
+                </div>
+                <div class="top-margin col-lg-4 col-md-12 col-sm-12">
+                    <div class="card custom-cards">
+                        <div class="card-header">
+                            <h5>
+                                <!--                                <i class="material-icons card-header-icon">link</i>-->
+                                <i class='bx bx-hash bx-sm card-header-icon'></i>
+                                Top Hashtags
+                            </h5>
+                        </div>
+                        <!--                        <canvas id="hashtagCloudChartCanvas"></canvas>-->
+
+                        <ul class="list-group list-group-flush" id="hashtag-list-id">
+
+                        </ul>
+                        <div id="view-all-hashtag-button" class="card-body text-right"
+                             style="padding: 10px 8px; border-top: 1px solid rgba(0,0,0,.125);display: block;">
+                            <a href="#" class="card-link " data-toggle="collapse" onclick="expandHashtagListClicked()"
+                               data-target="#remaining-hashtag-list" style="color: #4981FD;font-weight: 500"><span
+                                    id="viewAllHashtagLink">View All</span>
+                                <i id="expand-hashtag-icon" class="material-icons md-36 expand-more-icon"
                                    style="color:#6A7284;">expand_more</i></a>
 
                         </div>
@@ -357,6 +371,8 @@
 
 <!--</script>-->
 <script type="text/javascript" src="{{url_for('static', filename='js/script.js') }}"></script>
+
+
 <script type="text/javascript">
     $("#query").on("keydown", function (e) {
         if (e.keyCode === 13) {  //checks whether the pressed key is "Enter"
