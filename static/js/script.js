@@ -4,37 +4,6 @@ window.posCount = 0;
 window.negCount = 0;
 window.neutralCount = 0;
 
-class PieChart {
-    constructor() {
-        this.pieData = new Map();
-    }
-
-    addData(arr) {
-        for (let i = 0; i < arr.length; i++) {
-            if (this.pieData.has(arr[i][0])) {
-                let temp = this.pieData.get(arr[i][0]);
-                this.pieData.set(arr[i][0], temp + arr[i][1])
-            } else {
-                this.pieData.set(arr[i][0], arr[i][1])
-            }
-        }
-        //console.log(this.getTopFive())
-    }
-
-    getTopFiveWords() {
-        this.sortedMap = new Map([...this.pieData.entries()].sort((a, b) => b[1] - a[1]));
-        //console.log(this.sortedMap);
-        let temp = this.sortedMap.entries();
-        let topFive = [];
-        for (let i = 0; i < 5; i++) {
-            //console.log(temp.next().value)
-            if (temp.next().value !== undefined) {
-                topFive.push(temp.next().value);
-            }
-        }
-        return topFive;
-    }
-}
 
 function loadDoc() {
     //alert("called");
@@ -47,14 +16,16 @@ function loadDoc() {
     //hideAdvancedSearchOptions();
     let xhttp = new XMLHttpRequest();
     xhttp.onreadystatechange = function () {
-        let dataList;
         if (this.readyState === 4) {
             if (this.status === 200) {
                 //alert("response received")
-                dataList = this.responseText;
+                let response = this.responseText;
                 //console.log(dataList)
-                window.jobList = JSON.parse(dataList)
-                getUpdateFromServer()
+                let parsedJson = JSON.parse(response)
+                console.log(parsedJson);
+                startBoxAnimation();
+
+                sendRequestForId(parsedJson.id);
                 // loadChart(dataList)
             } else {
                 let errorResponse = JSON.parse(this.response);
@@ -140,7 +111,6 @@ function wipeMainChart() {
         window.hashtagCloudChart.destroy();
         window.hashtagCloudChart = undefined;
     }
-    pieChart = new PieChart();
     window.pcg = 0;
     window.old_value = 0;
     updateProgressBar();
@@ -352,7 +322,6 @@ function setupLinkFrequencyList(linkFreqDist) {
     }
 }
 
-let pieChart = new PieChart();
 
 function plotWordFrequencyChart(freqDist) {
     if (window.wordCloudChart !== undefined) {
@@ -553,57 +522,30 @@ function expandListClicked() {
     expanded = !expanded;
 }
 
-function getUpdateFromServer() {
-    //console.log(window.jobList);
-    window.total_job_count = window.jobList.length;
-    window.old_value = 0;
-    window.pcg = 0;
-    startBoxAnimation();
-    for (let i = 0; i < window.jobList.length; i++) {
-        //console.log("sending request for job " + window.jobList[i]);
-        sendRequestForId(window.jobList[i]);
-    }
-}
 
 window.total_response = [];
 
-function sendRequestForId(taskId) {
-    //console.log("Task id : " + taskId);
-
+function sendRequestForId(jobId) {
     $.ajax({
-        url: '/tasks/' + taskId,
+        url: '/tasks/' + jobId,
         method: 'POST'
     })
         .done((res) => {
-            //console.log(res.data);
             if (res.data.task_status === "finished") {
-                window.completedJobList.push(res.data.task_id);
-                let index = window.jobList.indexOf(res.data.task_id);
-                if (index !== -1) window.jobList.splice(index, 1);
-                window.total_response.push(res.data.task_res)
-                //console.log("job-list aray size" + window.jobList.length);
-                //console.log("old value " + window.old_value);
-                //console.log('pcg ' + window.pcg);
-                window.pcg = Math.floor(window.total_response.length / window.total_job_count * 100);
-
-                if (window.old_value <= window.pcg) {
-                    window.requestAnimationFrame(updateProgressBar);
-                }
-
-                if (window.jobList.length === 0) {
-                    //window.pcg = 0;
-                    //window.old_value = 0;
-                    console.log("making final request call");
-                    makeFinalCall();
-                    //postprocessing();
-                    //console.log(window.total_response)
-                }
-                //loadChart(res.data.task_res)
-
+                console.log(res.data.task_res);
+                loadChart(res.data.task_res);
+                showResultPage();
+            } else if (res.data.task_status === "queued") {
+                let percentage = res.data.task_percentage;
+                updateProgressBar(percentage);
+                setTimeout(function () {
+                    sendRequestForId(res.data.task_id);
+                }, 1000);
+            } else if (res.data.task_status === "failed") {
+                alert("Task failed, please try again");
             } else {
                 setTimeout(function () {
                     sendRequestForId(res.data.task_id);
-
                 }, 1000);
             }
         })
@@ -657,17 +599,13 @@ function makeFinalCall() {
 //
 // }
 
-const updateProgressBar = function () {
+function updateProgressBar(percentage) {
 
-    document.getElementById("percentage-count").innerText = Number(window.old_value) + "%";
-    document.getElementsByClassName('progress-bar').item(0).setAttribute('aria-valuenow', window.old_value);
-    document.getElementsByClassName('progress-bar').item(0).setAttribute('style', 'width:' + Number(window.old_value) + '%');
-    if (window.old_value < window.pcg) {
-        //document.getElementById('progress-bar').classList.remove("progress-bar-striped", "progress-bar-animated")
-        window.old_value++;
-        window.requestAnimationFrame(updateProgressBar);
-    }
-    if (window.old_value >= 100) {
+    document.getElementById("percentage-count").innerText = Number(percentage) + "%";
+    document.getElementsByClassName('progress-bar').item(0).setAttribute('aria-valuenow', percentage);
+    document.getElementsByClassName('progress-bar').item(0).setAttribute('style', 'width:' + Number(percentage) + '%');
+
+    if (percentage >= 100) {
         startDoneAnimation();
     }
 }

@@ -6,10 +6,13 @@ from validator import validator
 import nltk
 from rq import Queue
 from redis import Redis
-
+from db_ops.db_ops import DbOps
+from models import Jobs, Query
+import jsonpickle
 redis_conn = Redis()
 step_count = 7
-
+MONGO_URI = 'mongodb://127.0.0.1:27017'
+MONGO_DB_URI = 'mongodb://127.0.0.1:27017/satori'
 try:
     nltk.download('punkt', download_dir='/opt/python/current/app')
     nltk.download('stopwords', download_dir='/opt/python/current/app')
@@ -18,7 +21,8 @@ except:
     nltk.download('stopwords')
 
 app = Flask(__name__, template_folder="templates")
-MONTH = 0
+app.config['MONGO_URI'] = MONGO_URI
+db = DbOps(MONGO_URI)
 
 
 # @app.route('/', methods=['GET'])
@@ -39,38 +43,45 @@ def scrape_data():
         return app.response_class(response=json.dumps(search_json.serialize()),
                                   status=search_json.code,
                                   mimetype='application/json')
-
-    job_list = scraper.scrape(search_json['query'], search_json['startDate'], search_json['endDate'],
-                              search_json['stepCount'], search_json['tweetFrequency'])
+    did = db.create_new_document("query", search_json)
+    search_query = Query.SearchQuery(search_json['query'], search_json['startDate'], search_json['endDate'],
+                                     search_json['stepCount'], search_json['tweetFrequency'])
+    job_list = scraper.scrape(search_query, did, MONGO_URI)
 
     # processed_tweets = preprocessor.analyze(tweets)
     # response = preprocessor.compile_result(processed_tweets)
     # return render_template('index.html', response='')
-    return app.response_class(response=json.dumps(job_list),
+    for job in job_list:
+        db.update(did, "job_list." + job, Jobs.JobClass(job).serialize())
+    response = {"id", did}
+    return app.response_class(response=json.dumps({"id" : did}),
                               status=200,
                               mimetype='application/json')
 
 
 @app.route('/tasks/<task_id>', methods=['POST'])
 def get_status(task_id):
-    q = Queue(connection=redis_conn)
-    task = q.fetch_job(task_id)
-    if task:
-        res = ""
-        # if task.result is not None:
-        #     # processed_tweets = preprocessor.analyze(tweets=task.result)
-        #     # res = preprocessor.compile_result(processed_tweets)
-
-        response_object = {
-            "status": "success",
-            "data": {
-                "task_id": task.get_id(),
-                "task_status": task.get_status(),
-                "task_res": res
-            },
+    res = db.read_from_db(task_id)
+    job_list = res['job_list']
+    for key, value in job_list.items():
+        job_res = value['job_res']
+        if job_res is not None:
+            tweet = jsonpickle.decode(job_res)
+            print(tweet)
+    # job_list = db.get_job_list(task_id)
+    # list_len = len(job_list)
+    # q = Queue(connection=redis_conn)
+    # for job_id in job_list['job_list']:
+    #     job = q.fetch_job(job_id)
+    #     db.update(task_id, "job_list." + job_id + ".job_status", job.get_status())
+    #     db.update(task_id, "job_list." + job_id + ".job_res", "job.result")
+    #
+    response_object = {
+        "data": {
+            "task_id": task_id,
+            "task_status": "queued",
         }
-    else:
-        response_object = {"status": "error"}
+    }
     return jsonify(response_object)
 
 
@@ -103,6 +114,14 @@ def post_processing(finished_job_list):
         job_result_array.append(job.result)
     processed_tweets = preprocessor.analyze(tweets=job_result_array)
     return preprocessor.compile_result(processed_tweets)
+
+
+@app.route('/db_ops/', methods=['GET', 'POST'])
+def db_ops():
+    id = db.write_to_db("hello", "world")
+    res = db.read_from_db(id)
+    print(res)
+    return "<h1>" + id + "<h1>"
 
 
 if __name__ == '__main__':
