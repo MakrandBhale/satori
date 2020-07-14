@@ -531,3 +531,29 @@ select {
 label {
     color: #31353d;
 }
+
+.small-text {
+    font-size: 14px;
+    width: fit-content;
+}
+.regular-text {
+    font-size: 16px;
+}
+.med-text {
+    font-size: 18px;
+}
+.large-text {
+    font-size: 24px;
+}
+
+.green-light-background {
+    background-color: rgba(0, 200, 81, 0.10);
+    border-radius: 4px;
+    padding: 4px 8px;
+    color: #007E33;
+}
+
+.center{
+    margin: auto;
+}
+

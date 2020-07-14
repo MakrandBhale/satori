@@ -13,6 +13,8 @@ q = Queue(connection=r)
 
 
 def scrape(searchQuery, did, mongo_uri):
+    db = DbOps(mongo_uri)
+
     # did is used to update the task's result and status to the database
     # this is the id of document.
     beginDate = datetime.strptime(searchQuery.startDate, "%Y-%m-%d").date()
@@ -39,6 +41,9 @@ def scrape(searchQuery, did, mongo_uri):
         #     str(previous_date),
         #     frequency
         # )
+        db.update(did, "jobs_status_array." + job.id, 0)
+        db.update(did, "query_status", "queued")
+        db.close_connection()
         beginDate = previous_date
         final_list.append(job.id)
     return final_list
@@ -49,7 +54,7 @@ def scrape_tweet(query, begin_date, end_date, limit, mongo_uri, did):
     # db = DbOps(client)
     current_job = get_current_job()
     db.update(did, "job_list." + current_job.id + ".job_status", current_job.get_status())
-
+    db.update(did, "jobs_status_array." + current_job.id, 0)
     tweet_criteria = got.manager.TweetCriteria().setQuerySearch(query) \
         .setSince(begin_date) \
         .setUntil(end_date) \
@@ -64,9 +69,14 @@ def scrape_tweet(query, begin_date, end_date, limit, mongo_uri, did):
 
     some_obj = sanitizer.wrap(tweets)
     json_obj = jsonpickle.encode(some_obj)
+    print(str(current_job.id) + " : " + str(begin_date))
+    print(str(current_job.id) + " : " + "finished")
+    print(str(current_job.id) + " : " + str(len(tweets)))
     db.update(did, "job_list." + current_job.id + ".job_date", str(begin_date))
-    db.update(did, "job_list." + current_job.id + ".job_status", current_job.get_status())
+    db.update(did, "job_list." + current_job.id + ".job_status", "finished")
     db.update(did, "job_list." + current_job.id + ".job_res", json_obj)
+    db.update(did, "jobs_status_array." + current_job.id, 1)
+    db.close_connection()
     # array of twit objects to json array
 
     # return [str(begin_date), some_obj]

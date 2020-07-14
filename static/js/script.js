@@ -15,6 +15,8 @@ function loadDoc() {
     $("#drop-down-button-container").hide();
     //hideAdvancedSearchOptions();
     let xhttp = new XMLHttpRequest();
+    startBoxAnimation();
+
     xhttp.onreadystatechange = function () {
         if (this.readyState === 4) {
             if (this.status === 200) {
@@ -23,9 +25,8 @@ function loadDoc() {
                 //console.log(dataList)
                 let parsedJson = JSON.parse(response)
                 console.log(parsedJson);
-                startBoxAnimation();
-
                 sendRequestForId(parsedJson.id);
+                saveArray(parsedJson.id);
                 // loadChart(dataList)
             } else {
                 let errorResponse = JSON.parse(this.response);
@@ -62,12 +63,6 @@ function prepareParameters() {
         stepCount: stepCount,
         tweetFrequency: tweetFrequency
     })
-}
-
-class TimeFragment {
-    constructor(name, negative, neutral, positive) {
-
-    }
 }
 
 /*
@@ -531,13 +526,12 @@ function sendRequestForId(jobId) {
         method: 'POST'
     })
         .done((res) => {
+            //console.log(res.data);
+            let percentage = res.data.task_percentage;
+            updateProgressBar(percentage);
             if (res.data.task_status === "finished") {
-                console.log(res.data.task_res);
-                loadChart(res.data.task_res);
-                showResultPage();
+                getTaskResult(res.data.task_id)
             } else if (res.data.task_status === "queued") {
-                let percentage = res.data.task_percentage;
-                updateProgressBar(percentage);
                 setTimeout(function () {
                     sendRequestForId(res.data.task_id);
                 }, 1000);
@@ -554,20 +548,37 @@ function sendRequestForId(jobId) {
         });
 }
 
-function makeFinalCall() {
-    let xmlHttpRequest = new XMLHttpRequest();
-    xmlHttpRequest.onreadystatechange = function () {
-        if (this.readyState === 4 && this.status === 200) {
-            console.log(JSON.parse(this.responseText));
-            loadChart(JSON.parse(this.responseText));
+
+function getTaskResult(taskId) {
+    $.ajax({
+        url: '/get_result/' + taskId,
+        method: 'POST'
+    })
+        .done((res) => {
+            //console.log(typeof res)
+            console.log(res);
+            loadChart(res);
             showResultPage();
-        }
-        //console.log(this.responseText);
-    }
-    xmlHttpRequest.open("POST", "/get_results/");
-    xmlHttpRequest.setRequestHeader("Content-Type", "application/json;charset=UTF-8");
-    xmlHttpRequest.send(JSON.stringify(window.completedJobList));
+        })
+        .fail((err) => {
+            alert(err)
+        })
 }
+
+// function makeFinalCall() {
+//     let xmlHttpRequest = new XMLHttpRequest();
+//     xmlHttpRequest.onreadystatechange = function () {
+//         if (this.readyState === 4 && this.status === 200) {
+//             console.log(JSON.parse(this.responseText));
+//             loadChart(JSON.parse(this.responseText));
+//             showResultPage();
+//         }
+//         //console.log(this.responseText);
+//     }
+//     xmlHttpRequest.open("POST", "/get_results/");
+//     xmlHttpRequest.setRequestHeader("Content-Type", "application/json;charset=UTF-8");
+//     xmlHttpRequest.send(JSON.stringify(window.completedJobList));
+// }
 
 
 // function postprocessing() {

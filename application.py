@@ -4,15 +4,19 @@ from ml import preprocessor
 from validator.ErrorClass import ErrorResponse
 from validator import validator
 import nltk
+import time;
 from rq import Queue
 from redis import Redis
 from db_ops.db_ops import DbOps
 from models import Jobs, Query
 import jsonpickle
+from bson.json_util import dumps
 redis_conn = Redis()
 step_count = 7
 MONGO_URI = 'mongodb://127.0.0.1:27017'
 MONGO_DB_URI = 'mongodb://127.0.0.1:27017/satori'
+QUERY_STATUS_PATH = "query_status"
+COMPUTED_RESULT = "computed_res"
 try:
     nltk.download('punkt', download_dir='/opt/python/current/app')
     nltk.download('stopwords', download_dir='/opt/python/current/app')
@@ -53,51 +57,67 @@ def scrape_data():
     # return render_template('index.html', response='')
     for job in job_list:
         db.update(did, "job_list." + job, Jobs.JobClass(job).serialize())
-    response = {"id", did}
-    return app.response_class(response=json.dumps({"id" : did}),
+    db.update(did, "timestamp", str(time.time()))
+    return app.response_class(response=json.dumps({"id": did}),
                               status=200,
                               mimetype='application/json')
 
 
 @app.route('/tasks/<task_id>', methods=['POST'])
 def get_status(task_id):
-    res = db.read_from_db(task_id)
-    job_list = res['job_list']
-    for key, value in job_list.items():
-        job_res = value['job_res']
-        if job_res is not None:
-            tweet = jsonpickle.decode(job_res)
-            print(tweet)
-    # job_list = db.get_job_list(task_id)
-    # list_len = len(job_list)
-    # q = Queue(connection=redis_conn)
-    # for job_id in job_list['job_list']:
-    #     job = q.fetch_job(job_id)
-    #     db.update(task_id, "job_list." + job_id + ".job_status", job.get_status())
-    #     db.update(task_id, "job_list." + job_id + ".job_res", "job.result")
-    #
+    # TODO: validate task_id
+    res = db.get_jobs_status(task_id)
+    print(res)
+    print(type(res))
+    job_list = res.get('jobs_status_array')
+    total_jobs = 0
+    if job_list:
+        for key, value in job_list.items():
+            if value != 0:
+                total_jobs = total_jobs + 1
+        percentage = int((total_jobs * 100) / len(job_list))
+    else:
+        percentage = 0
+
+    task_status = "queued"
+    if percentage >= 100:
+        task_status = "finished"
+
     response_object = {
         "data": {
             "task_id": task_id,
-            "task_status": "queued",
+            "task_status": task_status,
+            "task_percentage": percentage
         }
     }
     return jsonify(response_object)
 
 
-@app.route('/get_results/', methods=['POST', 'GET'])
-def get_result():
-    job_list = json.loads(request.get_data())
-    q = Queue(connection=redis_conn)
-    finished_job_list = []
-    for job in job_list:
-        task = q.fetch_job(job)
-        if task.get_status() == "finished":
-            finished_job_list.append(task)
+@app.route('/get_result/<task_id>', methods=['POST', 'GET'])
+def get_result(task_id):
+    # TODO: validate task_id
+    res = db.read_from_db(task_id)
+    job_list = res['job_list']
+    total_jobs = 0
+    computed_res = res.get(COMPUTED_RESULT)
+    # if the result is already calculated then send
+    # already computed response.
+    if computed_res:
+        return jsonify(computed_res)
 
-    if len(finished_job_list) == len(job_list):
+    finished_job_list = []
+    for key, value in job_list.items():
+        job_res = value['job_res']
+        if job_res is not None:
+            total_jobs = total_jobs + 1
+            finished_job_list.append([value['job_date'], jsonpickle.decode(job_res)])
+
+    if len(finished_job_list) > 0:
         # which means all jobs completed;
+        # write to db
+        db.update(task_id, QUERY_STATUS_PATH, "finished")
         response = post_processing(finished_job_list)
+        db.update(task_id, COMPUTED_RESULT, response)
         return jsonify(response)
         # return app.response_class(response=jsonify(response),
         #                           status=200,
@@ -109,19 +129,36 @@ def get_result():
 
 
 def post_processing(finished_job_list):
-    job_result_array = []
-    for job in finished_job_list:
-        job_result_array.append(job.result)
-    processed_tweets = preprocessor.analyze(tweets=job_result_array)
+    # job_result_array = []
+    # for job in finished_job_list:
+    #     job_result_array.append(job.result)
+    processed_tweets = preprocessor.analyze(tweets=finished_job_list)
     return preprocessor.compile_result(processed_tweets)
 
 
-@app.route('/db_ops/', methods=['GET', 'POST'])
-def db_ops():
-    id = db.write_to_db("hello", "world")
-    res = db.read_from_db(id)
-    print(res)
-    return "<h1>" + id + "<h1>"
+@app.route('/get_history/', methods=['POST'])
+def get_recent_history():
+    # TODO:validate this array.
+    queryIdArray = request.get_json()
+    # TODO:add pagination
+    batch = db.get_queries_batch(queryIdArray)
+
+    return app.response_class(response=dumps(batch),
+                              status=200,
+                              mimetype='application/json')
+
+
+@app.route('/get_old_history/', methods=['POST'])
+def get_old_history():
+    # TODO: validate last json
+    request_json = request.get_json()
+    lastQueryId = request_json['lastId']
+    queryIdArray = request_json['queriesArray']
+
+    batch = db.get_old_queries_batch(lastQueryId, queryIdArray)
+    return app.response_class(response=dumps(batch),
+                              status=200,
+                              mimetype='application/json')
 
 
 if __name__ == '__main__':

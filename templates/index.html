@@ -29,6 +29,8 @@
         integrity="sha384-OgVRvuATP1z7JjHLkuOU7Xw704+h835Lr+6QL9UvYjZE3Ipu6Tp75j7Bh/kR0JKI"
         crossorigin="anonymous"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.9.3/Chart.min.js"></script>
+<!--<script src="//cdn.jsdelivr.net/npm/pouchdb@7.2.1/dist/pouchdb.min.js"></script>-->
+
 <script src="https://unpkg.com/@lottiefiles/lottie-player@0.4.0/dist/lottie-player.js"></script>
 
 <div class="container-fluid">
@@ -40,13 +42,10 @@
         <img src="{{url_for('static', filename='img/favicon.png') }}" width="32"
              height="32" alt="">
         <div class="divider"></div>
-        <a href="#home" class="menu-selected">
+        <a href="#home" class="menu-selected" id="home_menu" onclick="showHome()">
             <i class='bx bxs-home bx-sm'></i>
-
         </a>
-        <a href="#profile"><i class='bx bxs-user'></i>
-        </a>
-        <a href="#history">
+        <a href="#history" id="history_menu" onclick="showHistory()">
             <i class='bx bx-history bx-sm'></i>
         </a>
         <a href="#settings" class="bottom">
@@ -55,312 +54,345 @@
     </div>
 
     <div class="main-content">
-        <div style="display: none" id="loading-content" class="col-12 h-100">
-            <div style="height: 50%!important;" class="row">
-                <div class="col-6 d-flex offset-3 justify-content-center align-items-end">
-                    <lottie-player class="" id="box-animation"
-                                   src="https://assets2.lottiefiles.com/private_files/lf30_CxKW0a.json"
-                                   background="transparent"
-                                   speed="1" style="height: 300px;width: 300px" loop
-                                   autoplay></lottie-player>
-                    <lottie-player id="done-animation"
-                                   src="https://assets7.lottiefiles.com/packages/lf20_af6FNU.json"
-                                   background="transparent"
-                                   speed="1" style="display:none; height: 300px;width: 300px"
-                                   autoplay></lottie-player>
-                </div>
-
-            </div>
-            <div class="row h-auto d-flex justify-content-center">
-                <div class="col-lg-4 col-md-6 col-sm-11 ">
-                    <div class="col-12 text-center">
-                        <h4 id="">Fetching data, please wait.</h4>
-                        <div class="progress"
-                             style="margin-top:8px; margin-bottom:4px;width:100%;height: 20px; border-radius: 12px; background-color: #d4d4d4">
-                            <div id="progress-bar" class="progress-bar bg-custom-blue " role="progressbar"
-                                 style="width: 0;"
-                                 aria-valuenow="0"
-                                 aria-valuemin="0"
-                                 aria-valuemax="100"></div>
-                        </div>
-                        <h3 id="percentage-count">0%</h3>
+        <div id="home">
+            <div style="display: none" id="loading-content" class="col-12 ">
+                <div style="height: 50%!important;" class="row">
+                    <div class="col-6 d-flex offset-3 justify-content-center align-items-end">
+                        <lottie-player class="" id="box-animation"
+                                       src="https://assets2.lottiefiles.com/private_files/lf30_CxKW0a.json"
+                                       background="transparent"
+                                       speed="1" style="height: 300px;width: 300px" loop
+                                       autoplay></lottie-player>
+                        <lottie-player id="done-animation"
+                                       src="https://assets7.lottiefiles.com/packages/lf20_af6FNU.json"
+                                       background="transparent"
+                                       speed="1" style="display:none; height: 300px;width: 300px"
+                                       autoplay></lottie-player>
                     </div>
 
+                </div>
+                <div class="row h-auto d-flex justify-content-center">
+                    <div class="col-lg-4 col-md-6 col-sm-11 ">
+                        <div class="col-12 text-center">
+                            <h4 id="">Fetching data, please wait.</h4>
+                            <div class="progress"
+                                 style="margin-top:8px; margin-bottom:4px;width:100%;height: 20px; border-radius: 12px; background-color: #d4d4d4">
+                                <div id="progress-bar" class="progress-bar bg-custom-blue " role="progressbar"
+                                     style="width: 0;"
+                                     aria-valuenow="0"
+                                     aria-valuemin="0"
+                                     aria-valuemax="100"></div>
+                            </div>
+                            <h3 id="percentage-count">0%</h3>
+                        </div>
 
+
+                    </div>
                 </div>
             </div>
-        </div>
-        <div style="display: block" id="content">
-            <div class="row marginal justify-content-center">
-                <div class="col-12">
-                    <form method="POST" class="" id="search" style="margin-bottom: 6px">
-                        <div class="row row-marginal justify-content-center">
-                            <div class="col-lg-6 col-md-10  d-flex align-items-center">
-                                <table class=" search-field" id="search-field">
-                                    <tr>
-                                        <td valign="center"
-                                            style="padding-top:8px;padding-left: 8px; padding-right: 6px;">
-                                            <i class="bx bx-search bx-sm"
+            <div style="display: block" id="content">
+                <div class="row marginal justify-content-center">
+                    <div class="col-12">
+                        <form method="POST" class="" id="search" style="margin-bottom: 6px">
+                            <div class="row row-marginal justify-content-center">
+                                <div class="col-lg-6 col-md-10  d-flex align-items-center">
+                                    <table class=" search-field" id="search-field">
+                                        <tr>
+                                            <td valign="center"
+                                                style="padding-top:8px;padding-left: 8px; padding-right: 6px;">
+                                                <i class="bx bx-search bx-sm"
+                                                   style="color:#6A7284;"></i>
+
+                                            </td>
+                                            <td class="absorbing-column no-gutters" style="width:100%">
+                                                <input name="query" id="query" class="col-12 text-field"
+                                                       placeholder="Search with keyword or account name"
+                                                       autocomplete="off">
+
+                                            </td>
+                                        </tr>
+                                    </table>
+                                    <div class="" style="margin-left: 12px">
+                                        <button type="button" class="rectangle-icon-button" data-toggle="collapse"
+                                                data-target="#collapseExample" aria-expanded="false"
+                                                aria-controls="collapseExample">
+                                            <i class="bx bx-filter bx-sm"
                                                style="color:#6A7284;"></i>
-
-                                        </td>
-                                        <td class="absorbing-column no-gutters" style="width:100%">
-                                            <input name="query" id="query" class="col-12 text-field"
-                                                   placeholder="Search with keyword or account name" autocomplete="off">
-
-                                        </td>
-                                    </tr>
-                                </table>
-                                <div class="" style="margin-left: 12px">
-                                    <button type="button" class="rectangle-icon-button" data-toggle="collapse"
-                                            data-target="#collapseExample" aria-expanded="false"
-                                            aria-controls="collapseExample">
-                                        <i class="bx bx-filter bx-sm"
-                                           style="color:#6A7284;"></i>
-                                    </button>
+                                        </button>
+                                    </div>
                                 </div>
                             </div>
-                        </div>
-                        <div class="row row-marginal">
-                            <div class="col-12 collapse " id="collapseExample">
-                                <div class="form-row form-group">
-                                    <div class="col-lg-3 col-md-6 col-sm-12 hover-class">
-                                        <label for="start-date-picker">
-                                            From
-                                            <span style="padding: 0" data-toggle="tooltip" data-placement="right"
-                                                  title="Search for tweets from this date.">
+                            <div class="row row-marginal">
+                                <div class="col-12 collapse " id="collapseExample">
+                                    <div class="form-row form-group">
+                                        <div class="col-lg-3 col-md-6 col-sm-12 hover-class">
+                                            <label for="start-date-picker">
+                                                From
+                                                <span style="padding: 0" data-toggle="tooltip" data-placement="right"
+                                                      title="Search for tweets from this date.">
                                         <i class='bx bx-help-circle hides' style='color:#747474; font-size: 18px'></i>
                                     </span>
-                                        </label>
-                                        <input type="date" class="custom-input form-control" id="start-date-picker">
-                                    </div>
-                                    <div class="col-lg-3 col-md-6 col-sm-12 hover-class">
-                                        <label for="end-date-picker">
-                                            To
-                                            <span data-toggle="tooltip" data-placement="right"
-                                                  title="Tweets will be searched till this date.">
+                                            </label>
+                                            <input type="date" class="custom-input form-control" id="start-date-picker">
+                                        </div>
+                                        <div class="col-lg-3 col-md-6 col-sm-12 hover-class">
+                                            <label for="end-date-picker">
+                                                To
+                                                <span data-toggle="tooltip" data-placement="right"
+                                                      title="Tweets will be searched till this date.">
                                         <i class='bx bx-help-circle hides'
                                            style='color:#747474; font-size: 18px'></i>
                                     </span>
-                                        </label>
-                                        <input type="date" class="custom-input form-control" id="end-date-picker">
-                                    </div>
-                                    <div class="col-lg-3 col-md-6 col-sm-12 hover-class">
-                                        <label for="step-input">
-                                            Step size
-                                            <span data-toggle="tooltip" data-placement="right"
-                                                  title="(X-axis) Tweets will be searched in these steps. For ex. if 'weeks' option is selected, tweets will be searched by weeks timespan, until end date is reached.">
+                                            </label>
+                                            <input type="date" class="custom-input form-control" id="end-date-picker">
+                                        </div>
+                                        <div class="col-lg-3 col-md-6 col-sm-12 hover-class">
+                                            <label for="step-input">
+                                                Step size
+                                                <span data-toggle="tooltip" data-placement="right"
+                                                      title="(X-axis) Tweets will be searched in these steps. For ex. if 'weeks' option is selected, tweets will be searched by weeks timespan, until end date is reached.">
                                         <i class='bx bx-help-circle hides' style='color:#747474; font-size: 18px'></i>
                                     </span>
-                                        </label>
-                                        <select class="custom-input form-control" id="step-input">
-                                            <option value="0">Days</option>
-                                            <option selected value="1">Weeks</option>
-                                            <option value="2">15 days</option>
-                                            <option value="3">Month</option>
-                                        </select>
-                                    </div>
-                                    <div class="col-lg-3 col-md-6 col-sm-12 hover-class">
-                                        <label for="tweet-frequency">
-                                            Tweet frequency in step
-                                            <span data-toggle="tooltip" data-placement="right"
-                                                  title="(Y-axis) Number of maximum tweets to search in each steps. ">
+                                            </label>
+                                            <select class="custom-input form-control" id="step-input">
+                                                <option value="0">Days</option>
+                                                <option selected value="1">Weeks</option>
+                                                <option value="2">15 days</option>
+                                                <option value="3">Month</option>
+                                            </select>
+                                        </div>
+                                        <div class="col-lg-3 col-md-6 col-sm-12 hover-class">
+                                            <label for="tweet-frequency">
+                                                Tweet frequency in step
+                                                <span data-toggle="tooltip" data-placement="right"
+                                                      title="(Y-axis) Number of maximum tweets to search in each steps. ">
                                         <i class='bx bx-help-circle hides' style='color:#747474; font-size: 18px'></i>
                                     </span>
-                                        </label>
-                                        <input type="number" class="custom-input form-control" id="tweet-frequency">
+                                            </label>
+                                            <input type="number" class="custom-input form-control" id="tweet-frequency">
+                                        </div>
                                     </div>
-                                </div>
-                                <div class="row row-marginal ">
-                                    <div class="col col-12 text-center justify-content-center">
+                                    <div class="row row-marginal ">
+                                        <div class="col col-12 text-center justify-content-center">
 
-                                        <button type="button" onclick="loadDoc()"
-                                                class="material-button align-self-center">
-                                            Search
-                                        </button>
-                                        <div class="custom-control custom-control-inlinel custom-checkbox mr-sm-2">
-                                            <input type="checkbox" class="custom-control-input"
-                                                   id="customControlAutosizing">
-                                            <label class="custom-control-label" for="customControlAutosizing">Use this
-                                                filter for future searches</label>
+                                            <button type="button" onclick="loadDoc()"
+                                                    class="material-button align-self-center">
+                                                Search
+                                            </button>
+                                            <div class="custom-control custom-control-inlinel custom-checkbox mr-sm-2">
+                                                <input type="checkbox" class="custom-control-input"
+                                                       id="customControlAutosizing">
+                                                <label class="custom-control-label" for="customControlAutosizing">Use
+                                                    this
+                                                    filter for future searches</label>
+                                            </div>
                                         </div>
                                     </div>
                                 </div>
                             </div>
+                            <!--        <button onclick="return loadDoc()" class="btn btn-outline-success my-2 my-sm-0">Submit</button>-->
+                        </form>
+                    </div>
+                </div>
+                <div class="row marginal ">
+                    <div class="top-margin col-lg-2 col-md-3 col-sm-6 col-xs-6">
+                        <div class="card custom-cards">
+                            <div class="card-body" style="padding:12px 8px;">
+                                <div class="row no-gutters d-flex align-items-center ">
+                                    <div class="col-md-4 d-flex justify-content-center">
+                                        <div class="total-dot">
+                                            <!--                                        <i class="material-icons md-36 "-->
+                                            <!--                                           style="color: #11C8FC">all_inclusive</i>-->
+                                            <i class='bx bx-infinite bx-sm' style="color: #11C8FC"></i>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-8">
+                                        <p class="card-text"><span id="total-tweets-number"
+                                                                   class="counter-number">--</span><br>tweets
+                                            scraped</p>
+                                    </div>
+                                </div>
+                            </div>
                         </div>
-                        <!--        <button onclick="return loadDoc()" class="btn btn-outline-success my-2 my-sm-0">Submit</button>-->
-                    </form>
+                    </div>
+                    <div class="top-margin col-lg-2 col-md-3 col-sm-6 col-xs-6">
+                        <div class="card custom-cards">
+                            <div class="card-body" style="padding:12px 8px;">
+                                <div class="row no-gutters d-flex align-items-center ">
+                                    <div class="col-md-4 d-flex justify-content-center">
+                                        <div class="dot">
+                                            <!--                                        <i class="material-icons md-36 "-->
+                                            <!--                                           style="color: #4981FD">trending_up</i>-->
+                                            <i class='bx bx-trending-up bx-sm'
+                                               style="color: #4981FD; padding-top: 2px"></i>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-8">
+                                        <p class="card-text"><span id="positive-tweets-number"
+                                                                   class="counter-number">--</span><br>positive
+                                            tweets </p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="top-margin col-lg-2 col-md-3 col-sm-6 col-xs-6">
+                        <div class="card custom-cards">
+                            <div class="card-body" style="padding:12px 8px;">
+                                <div class="row no-gutters d-flex align-items-center ">
+                                    <div class="col-md-4 d-flex justify-content-center">
+                                        <div class="red-dot">
+                                            <!--                                        <i class="material-icons md-36 "-->
+                                            <!--                                           style="color: #F1075E">trending_down</i>-->
+                                            <i class='bx bx-trending-down bx-sm' style="color: #F1075E"></i>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-8">
+                                        <p class="card-text"><span id="negative-tweets-number"
+                                                                   class="counter-number">--</span><br>negative
+                                            tweets </p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="top-margin col-lg-2 col-md-3 col-sm-6 col-xs-6">
+                        <div class="card custom-cards">
+                            <div class="card-body" style="padding:12px 8px 12px 4px;">
+                                <div class="row no-gutters d-flex align-items-center ">
+                                    <div class="col-md-4 d-flex justify-content-center">
+                                        <div class="grey-dot">
+                                            <!--                                        <i class="material-icons md-36 "-->
+                                            <!--                                           style="color: rgba(104, 104, 104, 100);">trending_flat</i>-->
+                                            <i class='bx bx-arrow-back bx-rotate-180 bx-sm' style='color:#686868'></i>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-8">
+                                        <p class="card-text"><span id="neutral-tweets-number"
+                                                                   class="counter-number">--</span><br>neutral
+                                            tweets </p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+                <div class="row marginal">
+                    <div class="top-margin col-lg-7 col-md-12 col-sm-12">
+                        <div class="card custom-cards">
+                            <div class="card-header">
+                                <h5>
+                                    <!--                                <i class="material-icons card-header-icon">timeline</i>-->
+                                    <i class='bx bx-line-chart bx-sm card-header-icon '></i>
+                                    Overview
+                                </h5>
+                            </div>
+                            <div class="card-body">
+
+                                <div id="container" class="container">
+                                    <canvas id="myChart"></canvas>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="top-margin col-lg-5 col-md-12 col-sm-12">
+                        <div class="card custom-cards">
+                            <div class="card-header">
+                                <h5>
+                                    <!--                                <i class="material-icons card-header-icon">pie_chart</i>-->
+                                    <i class='bx bxs-doughnut-chart bx-sm card-header-icon'></i>
+
+                                    Top 10 words
+                                </h5>
+                            </div>
+                            <div class="card-body ">
+                                <div id="topWords" class="container">
+                                    <canvas id="wordFrequencyChart"></canvas>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="row marginal">
+
+                    <div class="top-margin col-lg-4 col-md-12 col-sm-12">
+                        <div class="card custom-cards">
+                            <div class="card-header">
+                                <h5>
+                                    <!--                                <i class="material-icons card-header-icon">link</i>-->
+                                    <i class='bx bx-link-alt bx-sm card-header-icon'></i>
+                                    Top Links
+                                </h5>
+                            </div>
+                            <ul class="list-group list-group-flush" id="link-list-id">
+
+                            </ul>
+                            <div id="view-all-button" class="card-body text-right"
+                                 style="padding: 10px 8px; border-top: 1px solid rgba(0,0,0,.125);display: block;">
+                                <a href="#" class="card-link " data-toggle="collapse" onclick="expandListClicked()"
+                                   data-target="#remaining-list" style="color: #4981FD;font-weight: 500"><span
+                                        id="viewAllLink">View All</span>
+                                    <i id="expand-icon" class="material-icons md-36 expand-more-icon"
+                                       style="color:#6A7284;">expand_more</i></a>
+
+                            </div>
+                        </div>
+                    </div>
+                    <div class="top-margin col-lg-4 col-md-12 col-sm-12">
+                        <div class="card custom-cards">
+                            <div class="card-header">
+                                <h5>
+                                    <!--                                <i class="material-icons card-header-icon">link</i>-->
+                                    <i class='bx bx-hash bx-sm card-header-icon'></i>
+                                    Top Hashtags
+                                </h5>
+                            </div>
+                            <!--                        <canvas id="hashtagCloudChartCanvas"></canvas>-->
+
+                            <ul class="list-group list-group-flush" id="hashtag-list-id">
+
+                            </ul>
+                            <div id="view-all-hashtag-button" class="card-body text-right"
+                                 style="padding: 10px 8px; border-top: 1px solid rgba(0,0,0,.125);display: block;">
+                                <a href="#" class="card-link " data-toggle="collapse"
+                                   onclick="expandHashtagListClicked()"
+                                   data-target="#remaining-hashtag-list" style="color: #4981FD;font-weight: 500"><span
+                                        id="viewAllHashtagLink">View All</span>
+                                    <i id="expand-hashtag-icon" class="material-icons md-36 expand-more-icon"
+                                       style="color:#6A7284;">expand_more</i></a>
+
+                            </div>
+                        </div>
+                    </div>
+
                 </div>
             </div>
-            <div class="row marginal ">
-                <div class="top-margin col-lg-2 col-md-3 col-sm-6 col-xs-6">
-                    <div class="card custom-cards">
-                        <div class="card-body" style="padding:12px 8px;">
-                            <div class="row no-gutters d-flex align-items-center ">
-                                <div class="col-md-4 d-flex justify-content-center">
-                                    <div class="total-dot">
-                                        <!--                                        <i class="material-icons md-36 "-->
-                                        <!--                                           style="color: #11C8FC">all_inclusive</i>-->
-                                        <i class='bx bx-infinite bx-sm' style="color: #11C8FC"></i>
+        </div>
+        <div style="display: none" id="history_content" class="col-12 justify-content-center">
+            <h1>Your previous searches</h1>
+            <div id="history-list-container" class="row justify-content-center">
+                <div class="col-6 col-md-6 col-sm-11">
+                    <ul id="history-list" class="list-group">
+                        <li class="list-item">
+                            <div class="card">
+                                <div class="card-body">
+                                    <div class="large-text center">Card title
+                                        <span class="small-text green-light-background">
+                                    <i class='bx bxs-check-circle' style='color:#39c00d'></i>
+                                    Finished
+                                </span>
                                     </div>
-                                </div>
-                                <div class="col-md-8">
-                                    <p class="card-text"><span id="total-tweets-number" class="counter-number">--</span><br>tweets
-                                        scraped</p>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <div class="top-margin col-lg-2 col-md-3 col-sm-6 col-xs-6">
-                    <div class="card custom-cards">
-                        <div class="card-body" style="padding:12px 8px;">
-                            <div class="row no-gutters d-flex align-items-center ">
-                                <div class="col-md-4 d-flex justify-content-center">
-                                    <div class="dot">
-                                        <!--                                        <i class="material-icons md-36 "-->
-                                        <!--                                           style="color: #4981FD">trending_up</i>-->
-                                        <i class='bx bx-trending-up bx-sm' style="color: #4981FD; padding-top: 2px"></i>
+                                    <div class="card-subtitle mb-2 small-text">
+
                                     </div>
-                                </div>
-                                <div class="col-md-8">
-                                    <p class="card-text"><span id="positive-tweets-number"
-                                                               class="counter-number">--</span><br>positive
-                                        tweets </p>
+
+                                    <p class="card-text"><small class="text-muted">Today</small></p>
                                 </div>
                             </div>
-                        </div>
-                    </div>
+                        </li>
+                    </ul>
                 </div>
-                <div class="top-margin col-lg-2 col-md-3 col-sm-6 col-xs-6">
-                    <div class="card custom-cards">
-                        <div class="card-body" style="padding:12px 8px;">
-                            <div class="row no-gutters d-flex align-items-center ">
-                                <div class="col-md-4 d-flex justify-content-center">
-                                    <div class="red-dot">
-                                        <!--                                        <i class="material-icons md-36 "-->
-                                        <!--                                           style="color: #F1075E">trending_down</i>-->
-                                        <i class='bx bx-trending-down bx-sm' style="color: #F1075E"></i>
-                                    </div>
-                                </div>
-                                <div class="col-md-8">
-                                    <p class="card-text"><span id="negative-tweets-number"
-                                                               class="counter-number">--</span><br>negative
-                                        tweets </p>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <div class="top-margin col-lg-2 col-md-3 col-sm-6 col-xs-6">
-                    <div class="card custom-cards">
-                        <div class="card-body" style="padding:12px 8px 12px 4px;">
-                            <div class="row no-gutters d-flex align-items-center ">
-                                <div class="col-md-4 d-flex justify-content-center">
-                                    <div class="grey-dot">
-                                        <!--                                        <i class="material-icons md-36 "-->
-                                        <!--                                           style="color: rgba(104, 104, 104, 100);">trending_flat</i>-->
-                                        <i class='bx bx-arrow-back bx-rotate-180 bx-sm' style='color:#686868'></i>
-                                    </div>
-                                </div>
-                                <div class="col-md-8">
-                                    <p class="card-text"><span id="neutral-tweets-number"
-                                                               class="counter-number">--</span><br>neutral
-                                        tweets </p>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-            </div>
-            <div class="row marginal">
-                <div class="top-margin col-lg-7 col-md-12 col-sm-12">
-                    <div class="card custom-cards">
-                        <div class="card-header">
-                            <h5>
-                                <!--                                <i class="material-icons card-header-icon">timeline</i>-->
-                                <i class='bx bx-line-chart bx-sm card-header-icon '></i>
-                                Overview
-                            </h5>
-                        </div>
-                        <div class="card-body">
-
-                            <div id="container" class="container">
-                                <canvas id="myChart"></canvas>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <div class="top-margin col-lg-5 col-md-12 col-sm-12">
-                    <div class="card custom-cards">
-                        <div class="card-header">
-                            <h5>
-                                <!--                                <i class="material-icons card-header-icon">pie_chart</i>-->
-                                <i class='bx bxs-doughnut-chart bx-sm card-header-icon'></i>
-
-                                Top 10 words
-                            </h5>
-                        </div>
-                        <div class="card-body ">
-                            <div id="topWords" class="container">
-                                <canvas id="wordFrequencyChart"></canvas>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <div class="row marginal">
-
-                <div class="top-margin col-lg-4 col-md-12 col-sm-12">
-                    <div class="card custom-cards">
-                        <div class="card-header">
-                            <h5>
-                                <!--                                <i class="material-icons card-header-icon">link</i>-->
-                                <i class='bx bx-link-alt bx-sm card-header-icon'></i>
-                                Top Links
-                            </h5>
-                        </div>
-                        <ul class="list-group list-group-flush" id="link-list-id">
-
-                        </ul>
-                        <div id="view-all-button" class="card-body text-right"
-                             style="padding: 10px 8px; border-top: 1px solid rgba(0,0,0,.125);display: block;">
-                            <a href="#" class="card-link " data-toggle="collapse" onclick="expandListClicked()"
-                               data-target="#remaining-list" style="color: #4981FD;font-weight: 500"><span
-                                    id="viewAllLink">View All</span>
-                                <i id="expand-icon" class="material-icons md-36 expand-more-icon"
-                                   style="color:#6A7284;">expand_more</i></a>
-
-                        </div>
-                    </div>
-                </div>
-                <div class="top-margin col-lg-4 col-md-12 col-sm-12">
-                    <div class="card custom-cards">
-                        <div class="card-header">
-                            <h5>
-                                <!--                                <i class="material-icons card-header-icon">link</i>-->
-                                <i class='bx bx-hash bx-sm card-header-icon'></i>
-                                Top Hashtags
-                            </h5>
-                        </div>
-                        <!--                        <canvas id="hashtagCloudChartCanvas"></canvas>-->
-
-                        <ul class="list-group list-group-flush" id="hashtag-list-id">
-
-                        </ul>
-                        <div id="view-all-hashtag-button" class="card-body text-right"
-                             style="padding: 10px 8px; border-top: 1px solid rgba(0,0,0,.125);display: block;">
-                            <a href="#" class="card-link " data-toggle="collapse" onclick="expandHashtagListClicked()"
-                               data-target="#remaining-hashtag-list" style="color: #4981FD;font-weight: 500"><span
-                                    id="viewAllHashtagLink">View All</span>
-                                <i id="expand-hashtag-icon" class="material-icons md-36 expand-more-icon"
-                                   style="color:#6A7284;">expand_more</i></a>
-
-                        </div>
-                    </div>
-                </div>
-
             </div>
         </div>
     </div>
@@ -371,6 +403,8 @@
 
 <!--</script>-->
 <script type="text/javascript" src="{{url_for('static', filename='js/script.js') }}"></script>
+<script type="text/javascript" src="{{url_for('static', filename='js/navigation.js') }}"></script>
+<script type="text/javascript" src="{{url_for('static', filename='js/history.js') }}"></script>
 
 
 <script type="text/javascript">
