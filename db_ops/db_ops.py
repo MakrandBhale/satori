@@ -45,7 +45,7 @@ class DbOps:
         cursor = self.data_collection \
             .find({"_id": {"$in": queryArray}}, {'query': 1, 'query_status': 1, 'timestamp': 1, 'total_tweets': 1}) \
             .sort([("_id", -1)]) \
-            .limit(3)
+            .limit(10)
         for query in cursor:
             res.append(query)
         return res

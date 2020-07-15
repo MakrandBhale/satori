@@ -6,6 +6,13 @@ html, body {
     color: #31353d;
 }
 
+button {
+
+
+}
+
+
+
 h5 {
     margin-bottom: 0;
 }
@@ -21,6 +28,17 @@ h5 {
 
 .loading-content {
 
+}
+
+.spin-refresh {
+
+    -webkit-animation: antiClockwiseSpin 2s linear infinite;
+    animation: antiClockwiseSpin 2s linear infinite;
+}
+
+@keyframes antiClockwiseSpin {
+	0%  {transform: rotate(360deg);}
+	100% {transform: rotate(0deg);}
 }
 
 .top-margin {
@@ -79,7 +97,7 @@ h5 {
     height: 100vh;
 
     margin-left: 80px; /* Same as the width of the sidenav */
-    padding: 0px 20px 10px;
+    padding: 12px 20px 10px;
 }
 
 .custom-cards {
@@ -252,6 +270,31 @@ h5 {
     padding: 6px 8px;
     transition: background-color 0.1s ease-in-out;
     outline: none !important;
+}
+
+.material-outline-image-button {
+    background-color: #4981fd;
+    border-radius: 4px;
+    text-decoration: none;
+    font-weight: 500;
+    color: white !important;
+    display: flex;
+    border: none;
+    padding: 6px 8px;
+    transition: background-color 0.1s ease-in-out;
+    outline: none !important;
+}
+
+.material-outline-image-button:active {
+    box-shadow: 0 4px 5px 0 rgba(0, 0, 0, 0.14), 0 1px 10px 0 rgba(0, 0, 0, 0.12), 0 2px 4px -1px rgba(0, 0, 0, 0.20);
+}
+
+.material-outline-image-button:hover {
+    /*box-shadow: 0 1px 2px 0 rgba(26, 115, 232, 0.451), 0 1px 8px 1px rgba(26, 115, 232, 0.302);*/
+
+    background-color: #3672fc;
+    outline: 1px solid transparent;
+    border: none;
 }
 
 
@@ -574,12 +617,19 @@ label {
     font-size: 22px;
 }
 
+.xl-text {
+    font-size: 24px;
+
+}
+
 .green-light-background {
     background-color: rgba(0, 200, 81, 0.10);
     border-radius: 4px;
     padding: 4px 8px;
     color: #007E33;
-    margin-left: 4px;
+    margin-left: 8px;
+    height: 24px;
+    font-size: 14px;
 }
 
 .yellow-light-background {
@@ -587,7 +637,10 @@ label {
     border-radius: 4px;
     padding: 4px 8px;
     color: #FF8800;
-    margin-left: 4px;
+    margin-left: 8px;
+    height: 24px;
+        font-size: 14px;
+
 }
 
 .red-light-background {
@@ -595,7 +648,10 @@ label {
     border-radius: 4px;
     padding: 4px 8px;
     color: #CC0000;
-    margin-left: 4px;
+    margin-left: 8px;
+    height: 24px;
+    font-size: 14px;
+
 }
 
 .center {

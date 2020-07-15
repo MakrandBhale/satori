@@ -91,7 +91,7 @@
                 </div>
             </div>
             <div style="display: block" id="content">
-                <div class="row marginal justify-content-center">
+                <div class="row justify-content-center">
                     <div class="col-12">
                         <form method="POST" class="" id="search" style="margin-bottom: 6px">
                             <div class="row row-marginal justify-content-center">
@@ -194,7 +194,7 @@
                         </form>
                     </div>
                 </div>
-                <div class="row marginal ">
+                <div class="row row-marginal ">
                     <div class="top-margin col-lg-2 col-md-3 col-sm-6 col-xs-6">
                         <div class="card custom-cards">
                             <div class="card-body" style="padding:12px 8px;">
@@ -278,7 +278,7 @@
                     </div>
 
                 </div>
-                <div class="row marginal">
+                <div class="row row-marginal">
                     <div class="top-margin col-lg-7 col-md-12 col-sm-12">
                         <div class="card custom-cards">
                             <div class="card-header">
@@ -314,7 +314,7 @@
                         </div>
                     </div>
                 </div>
-                <div class="row marginal">
+                <div class="row row-marginal">
 
                     <div class="top-margin col-lg-4 col-md-12 col-sm-12">
                         <div class="card custom-cards">
@@ -370,11 +370,13 @@
             </div>
         </div>
         <div style="display: none" id="history_content" class="col-12 ">
-            <div class="d-flex justify-content-between">
-                <div class="col-lg-6 col-md-10 col-sm-11">
-                    <h3 class="marginal">Your previous searches</h3>
-
-                    <button>Refresh</button>
+            <div class="row  justify-content-center align-content-center" style="margin-bottom: 18px">
+                <div class="col-lg-6 col-md-10 col-sm-11 d-flex justify-content-between">
+                    <span class="xl-text">Your previous searches</span>
+                    <button class="material-outline-image-button" onclick="fetchHistoryArray()">
+                        <i id="refresh-icon" class='bx bx-refresh ' style="color: white; font-size: 24px"></i>
+                        Refresh
+                    </button>
                 </div>
             </div>
             <div id="history-list-container" class="row justify-content-center">
