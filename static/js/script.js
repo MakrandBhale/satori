@@ -121,6 +121,7 @@ function loadChart(response) {
     //console.log("chartdata: " + res);
     //let response = JSON.parse(res)
     //console.log(response);
+
     let datalist = response.timeFragment;
 
     let positive = [], negative = [], neutral = [];
@@ -557,6 +558,7 @@ function getTaskResult(taskId) {
         .done((res) => {
             //console.log(typeof res)
             console.log(res);
+            wipeMainChart();
             loadChart(res);
             showResultPage();
         })
@@ -635,5 +637,6 @@ function showResultPage() {
     setTimeout(function () {
         $("#loading-content").hide();
         $("#content").show();
+        showHome();
     }, 1000)
 }

@@ -20,8 +20,11 @@ class DbOps:
     def create_new_document(self, key, value):
         return str(self.data_collection.insert({key: value}))
 
-    def read_from_db(self, key):
-        return self.data_collection.find_one({"_id": ObjectId(key)})
+    def read_from_db(self, did):
+        return self.data_collection.find_one({"_id": ObjectId(did)})
+
+    def get_value_by_key(self, did, key):
+        return self.data_collection.find_one({"_id": ObjectId(did)}, {key: 1, '_id': 0})
 
     def update(self, did, key, value):
         self.data_collection.update({"_id": ObjectId(did)}, {'$set': {key: value}})
@@ -40,7 +43,7 @@ class DbOps:
         queryArray = array_to_obj_id(queryArray)
         res = []
         cursor = self.data_collection \
-            .find({"_id": {"$in": queryArray}}, {'query': 1, 'query_status': 1, 'timestamp': 1}) \
+            .find({"_id": {"$in": queryArray}}, {'query': 1, 'query_status': 1, 'timestamp': 1, 'total_tweets': 1}) \
             .sort([("_id", -1)]) \
             .limit(3)
         for query in cursor:

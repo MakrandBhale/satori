@@ -179,7 +179,7 @@
                                                     class="material-button align-self-center">
                                                 Search
                                             </button>
-                                            <div class="custom-control custom-control-inlinel custom-checkbox mr-sm-2">
+                                            <div class="custom-control custom-control-inline custom-checkbox mr-sm-2">
                                                 <input type="checkbox" class="custom-control-input"
                                                        id="customControlAutosizing">
                                                 <label class="custom-control-label" for="customControlAutosizing">Use
@@ -369,29 +369,19 @@
                 </div>
             </div>
         </div>
-        <div style="display: none" id="history_content" class="col-12 justify-content-center">
-            <h1>Your previous searches</h1>
+        <div style="display: none" id="history_content" class="col-12 ">
+            <div class="d-flex justify-content-between">
+                <div class="col-lg-6 col-md-10 col-sm-11">
+                    <h3 class="marginal">Your previous searches</h3>
+
+                    <button>Refresh</button>
+                </div>
+            </div>
             <div id="history-list-container" class="row justify-content-center">
-                <div class="col-6 col-md-6 col-sm-11">
-                    <ul id="history-list" class="list-group">
-                        <li class="list-item">
-                            <div class="card">
-                                <div class="card-body">
-                                    <div class="large-text center">Card title
-                                        <span class="small-text green-light-background">
-                                    <i class='bx bxs-check-circle' style='color:#39c00d'></i>
-                                    Finished
-                                </span>
-                                    </div>
-                                    <div class="card-subtitle mb-2 small-text">
+                <div class="col-lg-6 col-md-10 col-sm-11">
+                    <div id="history-list" class="list-group ">
 
-                                    </div>
-
-                                    <p class="card-text"><small class="text-muted">Today</small></p>
-                                </div>
-                            </div>
-                        </li>
-                    </ul>
+                    </div>
                 </div>
             </div>
         </div>

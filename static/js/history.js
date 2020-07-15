@@ -124,32 +124,123 @@ function updateHistoryUi(list) {
     let historyListUl = document.getElementById('history-list');
     let button = document.createElement("button");
     button.innerText = "Load More";
-    //clearList();
+    clearList();
     button.setAttribute("onClick", "fetchOldHistoryArray()");
     for (let i = 0; i < list.length; i++) {
-        let li = document.createElement("li");
-        li.appendChild(document.createTextNode(list[i]['query']['query']))
-        li.setAttribute("class", "list-group-item")
-        historyListUl.appendChild(createHistoryCard(list[i]['query']['query'], list[i]['query_status'], list[i]['timestamp']));
+        let listItem = document.createElement('div');
+        listItem.setAttribute("class", "list-group-item");
+        listItem.innerHTML = getTemplate(
+            list[i]['query']['query'],
+            list[i]['query']['startDate'],
+            list[i]['query']['endDate'],
+            list[i]['query_status'],
+            list[i]['timestamp'],
+            list[i]['total_tweets'],
+            list[i]['_id']['$oid']
+        );
+        historyListUl.appendChild(listItem)
+        // let li = document.createElement("li");
+        // li.appendChild(document.createTextNode(list[i]['query']['query']))
+        // li.setAttribute("class", "list-group-item")
+        //historyListUl.appendChild(createHistoryCard(list[i]['query']['query'], list[i]['query_status'], list[i]['timestamp']));
+
     }
 
-    historyListUl.appendChild(button);
-}
-
-function createHistoryCard(name, status, time){
-    let divCard = document.createElement("div");
-    divCard.setAttribute("class", "card");
-    let divCardBody = document.createElement("div");
-    divCardBody.setAttribute("class", "card-body");
-    let cardTitle = document.createElement("h5");
-    cardTitle.setAttribute("class", "card-title");
-    cardTitle.appendChild(document.createTextNode(name));
-    divCardBody.appendChild(cardTitle);
-    divCard.appendChild(divCardBody)
-    return divCard;
+    //historyListUl.appendChild(button);
 }
 
 function clearList(){
     let list = document.getElementById("history-list");
     list.innerHTML = "";
+
+}
+
+function getDateString(timestamp) {
+    timestamp = timestamp * 1000;
+    let timestampDate = new Date(timestamp);
+    let today = new Date();
+    console.log("today :" + today.getDate())
+    let diff = Math.abs(today - timestampDate);
+    let minutes = Math.floor((diff/1000)/60);
+    if(minutes < 5) {
+        return "Just now"
+    }
+
+    if (timestampDate.getDate() === today.getDate()) {
+        return "Today"
+    } else if((today.getDate() - timestampDate.getDate()) === 1){
+        return "Yesterday"
+    } else {
+        return timestampDate.toDateString();
+    }
+
+}
+
+function getStatusTemplate(queryStatus){
+    if(queryStatus === "finished") {
+        return ` <span class="small-text green-light-background">
+            <i class='bx bxs-check-circle' style='color:#39c00d;'></i>
+            Finished
+        </span>`;
+    } else if( queryStatus === "queued"){
+        return ` <span class="small-text yellow-light-background">
+            <i class='bx bxs-time-five' style='color:#ff8800'  ></i>
+            Queued
+        </span>`;
+    } else {
+        return ` <span class="small-text red-light-background">
+            <i class='bx bxs-error-circle' style='color:#cc0000'  ></i>
+            Failed
+        </span>`;
+    }
+}
+
+function getTemplate(name, startDate, endDate, queryStatus, searchedDate, tweetCount, searchId) {
+    return `
+        
+        <div class="d-flex w-100 flex-column">
+            <table style="table-layout: auto; margin-bottom: 8px" cellspacing="0" cellpadding="0">
+                <tr>
+                    <td style="white-space: nowrap">
+                        <span class="large-text center">${name}</span>
+                    </td>
+                    <td style="white-space: nowrap">
+                        ${getStatusTemplate(queryStatus)}
+                    </td>
+                    <td style="width: 100%"></td>
+                </tr>
+            </table>
+            <h6 class="card-subtitle mb-2 small-text text-muted">
+                <span class="small-text ">${startDate}</span>
+                <span class="small-text"><i class='bx bx-arrow-back bx-rotate-180'
+                                            style='color:#1a59f6'></i></span>
+                <span class="small-text">${endDate}</span>
+
+            </h6>
+
+            <p>
+            <!-- templates are awesome! here sometimes tweet count is undefined so nothing is shown-->
+                ${tweetCount ? `<span class="med-text">${tweetCount}</span>
+                <span class="regular-text"> tweets scraped.</span>` : ''                                   
+                }
+                
+            </p>
+            <div class="d-flex justify-content-between align-items-center">
+<!--                disable the button if process is not finished yet-->
+                <button class="material-text-button" onclick="loadPreviousQuery('${searchId}', this)" ${queryStatus !== "finished" ? ` disabled` : ``}>View Result</button>
+                <p class="card-text"><small class="text-muted">${getDateString(searchedDate)}</small></p>
+            </div>
+
+        </div>
+
+
+        
+
+    `;
+}
+
+function loadPreviousQuery(searchId, button) {
+    button.innerText = "Loading...";
+    button.disabled = true;
+    getTaskResult(searchId);
 }

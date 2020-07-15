@@ -69,13 +69,20 @@ def scrape_tweet(query, begin_date, end_date, limit, mongo_uri, did):
 
     some_obj = sanitizer.wrap(tweets)
     json_obj = jsonpickle.encode(some_obj)
-    print(str(current_job.id) + " : " + str(begin_date))
-    print(str(current_job.id) + " : " + "finished")
-    print(str(current_job.id) + " : " + str(len(tweets)))
+    # print(str(current_job.id) + " : " + str(begin_date))
+    # print(str(current_job.id) + " : " + "finished")
+    # print(str(current_job.id) + " : " + str(len(tweets)))
     db.update(did, "job_list." + current_job.id + ".job_date", str(begin_date))
     db.update(did, "job_list." + current_job.id + ".job_status", "finished")
     db.update(did, "job_list." + current_job.id + ".job_res", json_obj)
     db.update(did, "jobs_status_array." + current_job.id, 1)
+    res = db.get_value_by_key(did, 'total_tweets')
+    print(res)
+    count = len(tweets)
+    if res:
+        count = count + res['total_tweets']
+
+    db.update(did, "total_tweets", count)
     db.close_connection()
     # array of twit objects to json array
 

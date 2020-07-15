@@ -15,7 +15,6 @@ h5 {
 }
 
 
-
 #loading-screen {
 
 }
@@ -227,6 +226,32 @@ h5 {
     background-color: #4981fd;
     outline: 1px solid transparent;
     border: none;
+}
+
+.material-text-button:focus,
+.material-text-button:hover {
+    background-color: rgba(73, 129, 253, 0.1);
+}
+
+.material-text-button:active {
+    background-color: rgba(73, 129, 253, 0.2);
+}
+
+.material-text-button:disabled {
+    background-color: rgba(196, 196, 196, 0.1);
+    color: #6A7284;
+}
+
+.material-text-button {
+    background-color: rgba(73, 129, 253, 0.0);
+    border-radius: 4px;
+    text-decoration: none;
+    font-weight: 500;
+    color: #4981fd;
+    border: none;
+    padding: 6px 8px;
+    transition: background-color 0.1s ease-in-out;
+    outline: none !important;
 }
 
 
@@ -533,17 +558,20 @@ label {
 }
 
 .small-text {
-    font-size: 14px;
+    font-size: 12px;
     width: fit-content;
 }
+
 .regular-text {
     font-size: 16px;
 }
+
 .med-text {
     font-size: 18px;
 }
+
 .large-text {
-    font-size: 24px;
+    font-size: 22px;
 }
 
 .green-light-background {
@@ -551,9 +579,30 @@ label {
     border-radius: 4px;
     padding: 4px 8px;
     color: #007E33;
+    margin-left: 4px;
 }
 
-.center{
+.yellow-light-background {
+    background-color: rgba(255, 187, 51, 0.10);
+    border-radius: 4px;
+    padding: 4px 8px;
+    color: #FF8800;
+    margin-left: 4px;
+}
+
+.red-light-background {
+    background-color: rgba(255, 68, 68, 0.1);
+    border-radius: 4px;
+    padding: 4px 8px;
+    color: #CC0000;
+    margin-left: 4px;
+}
+
+.center {
     margin: auto;
 }
 
+.list-group-item {
+    margin-bottom: 12px;
+    border-radius: 8px !important;
+}
