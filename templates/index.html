@@ -28,8 +28,7 @@
 <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/js/bootstrap.min.js"
         integrity="sha384-OgVRvuATP1z7JjHLkuOU7Xw704+h835Lr+6QL9UvYjZE3Ipu6Tp75j7Bh/kR0JKI"
         crossorigin="anonymous"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.9.3/Chart.min.js"></script>
-<!--<script src="//cdn.jsdelivr.net/npm/pouchdb@7.2.1/dist/pouchdb.min.js"></script>-->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.9.3/Chart.bundle.js" integrity="sha512-G8JE1Xbr0egZE5gNGyUm1fF764iHVfRXshIoUWCTPAbKkkItp/6qal5YAHXrxEu4HNfPTQs6HOu3D5vCGS1j3w==" crossorigin="anonymous"></script><!--<script src="//cdn.jsdelivr.net/npm/pouchdb@7.2.1/dist/pouchdb.min.js"></script>-->
 
 <script src="https://unpkg.com/@lottiefiles/lottie-player@0.4.0/dist/lottie-player.js"></script>
 
@@ -45,9 +44,13 @@
         <a href="#home" class="menu-selected" id="home_menu" onclick="showHome()">
             <i class='bx bxs-home bx-sm'></i>
         </a>
+        <!--<a href="#live_stream" id="live_stream_menu" onclick="showStreamPage()">
+            <i class='bx bxs-analyse bx-sm'></i>
+        </a>-->
         <a href="#history" id="history_menu" onclick="showHistory()">
             <i class='bx bx-history bx-sm'></i>
         </a>
+
         <a href="#settings" class="bottom">
             <i class='bx bxs-cog bx-sm'></i>
         </a>
@@ -175,17 +178,18 @@
                                     <div class="row row-marginal ">
                                         <div class="col col-12 text-center justify-content-center">
 
-                                            <button type="button" onclick="loadDoc()"
+                                            <button type="button" onclick="loadDoc()" data-toggle="collapse"
+                                                    data-target="#collapseExample"
                                                     class="material-button align-self-center">
                                                 Search
                                             </button>
-                                            <div class="custom-control custom-control-inline custom-checkbox mr-sm-2">
-                                                <input type="checkbox" class="custom-control-input"
-                                                       id="customControlAutosizing">
-                                                <label class="custom-control-label" for="customControlAutosizing">Use
-                                                    this
-                                                    filter for future searches</label>
-                                            </div>
+                                            <!--                                            <div class="custom-control custom-control-inline custom-checkbox mr-sm-2">-->
+                                            <!--                                                <input type="checkbox" class="custom-control-input"-->
+                                            <!--                                                       id="customControlAutosizing">-->
+                                            <!--                                                <label class="custom-control-label" for="customControlAutosizing">Use-->
+                                            <!--                                                    this-->
+                                            <!--                                                    filter for future searches</label>-->
+                                            <!--                                            </div>-->
                                         </div>
                                     </div>
                                 </div>
@@ -369,6 +373,11 @@
                 </div>
             </div>
         </div>
+        <div style="display: none" id="live_stream_content" class="col-12">
+            <h3>What are people talking about right now?</h3>
+            <input type="text" id="stream-keyword-input"/>
+            <button id="start-stream" onclick="create_new_stream()">Start Stream</button>
+        </div>
         <div style="display: none" id="history_content" class="col-12 ">
             <div class="row  justify-content-center align-content-center" style="margin-bottom: 18px">
                 <div class="col-lg-6 col-md-10 col-sm-11 d-flex justify-content-between">
@@ -382,8 +391,8 @@
             <div id="history-list-container" class="row justify-content-center">
                 <div class="col-lg-6 col-md-10 col-sm-11">
                     <div id="history-list" class="list-group ">
-
                     </div>
+
                 </div>
             </div>
         </div>
@@ -397,6 +406,8 @@
 <script type="text/javascript" src="{{url_for('static', filename='js/script.js') }}"></script>
 <script type="text/javascript" src="{{url_for('static', filename='js/navigation.js') }}"></script>
 <script type="text/javascript" src="{{url_for('static', filename='js/history.js') }}"></script>
+<script type="text/javascript" src="{{url_for('static', filename='js/streamer.js') }}"></script>
+
 
 
 <script type="text/javascript">

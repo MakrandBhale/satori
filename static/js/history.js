@@ -59,7 +59,7 @@ function fetchHistoryArray() {
     });
 }
 
-function fetchOldHistoryArray() {
+function fetchLoadMoreContent() {
     let lastId = getLastId();
     if (lastId == null) {
         fetchHistoryArray();
@@ -131,7 +131,7 @@ function updateHistoryUi(list) {
     let button = document.createElement("button");
     button.innerText = "Load More";
     clearList();
-    button.setAttribute("onClick", "fetchOldHistoryArray()");
+    button.setAttribute("onClick", "fetchLoadMoreContent()");
     for (let i = 0; i < list.length; i++) {
         let listItem = document.createElement('div');
         listItem.setAttribute("class", "list-group-item");
@@ -149,10 +149,11 @@ function updateHistoryUi(list) {
         // li.appendChild(document.createTextNode(list[i]['query']['query']))
         // li.setAttribute("class", "list-group-item")
         //historyListUl.appendChild(createHistoryCard(list[i]['query']['query'], list[i]['query_status'], list[i]['timestamp']));
-
     }
+    let buttonContainer = document.createElement('div');
+    buttonContainer.innerHTML = getLoadMoreButtonTemplate();
 
-    //historyListUl.appendChild(button);
+    historyListUl.appendChild(buttonContainer);
 }
 
 function clearList() {
@@ -259,8 +260,7 @@ function loadPreviousQuery(searchId, button) {
     getTaskResult(searchId);
 }
 
-function refreshHistory() {
-
-
+function getLoadMoreButtonTemplate() {
+    return `<button class="col-12 outline-material-button" onclick="fetchLoadMoreContent()">Load More</button>`;
 }
 

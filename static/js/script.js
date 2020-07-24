@@ -108,20 +108,32 @@ function wipeMainChart() {
     }
     window.pcg = 0;
     window.old_value = 0;
-    updateProgressBar();
+    updateProgressBar(0);
 }
 
 function getProperDate(stringDate) {
     let parts = stringDate.split('-');
-    let mydate = new Date(parts[0], parts[1] - 1, parts[2]);
-    return mydate.toDateString();
+    let fromDate = new Date(parts[0], parts[1] - 1, parts[2]);
+    /*uncomment this to enable class based x-axis*/
+    let endDate = new Date(parts[3], parts[4] - 1, parts[5]);
+    let midpoint = new Date((fromDate.getTime() + endDate.getTime()) / 2);
+
+    // return fromDate.toDateString() + "-" + endDate.toDateString();
+    //return parts[0] + + parts[1] - 1 +" "+ parts[2];
+    return {
+        startDate: fromDate,
+        endDate: endDate,
+        midPoint: midpoint
+    }
+
+    //return fromDate.toDateString()
 }
 
 function loadChart(response) {
     //console.log("chartdata: " + res);
     //let response = JSON.parse(res)
     //console.log(response);
-
+    showHome();
     let datalist = response.timeFragment;
 
     let positive = [], negative = [], neutral = [];
@@ -133,7 +145,10 @@ function loadChart(response) {
                 let date = new Date(parseFloat(datalist[i].name) * 1000);
                 let options = {month: 'long', day: 'numeric', year: 'numeric'};
                 let formatted_date = date.toLocaleDateString("en-US", options);*/
-        dates.push(getProperDate(datalist[i].name));
+        //dates.push(getProperDate(datalist[i].name));
+        let properDateObject = getProperDate(datalist[i].name)
+        dates.push(properDateObject);
+
 
         positive.push(datalist[i].positive);
         window.posCount = window.posCount + datalist[i].positive;
@@ -151,14 +166,15 @@ function loadChart(response) {
     negative.reverse();
     neutral.reverse();
     dates.reverse();*/
+
     if (window.mainChart === undefined) {
         plotMainChart(positive, negative, neutral, dates)
     } else {
 
-        window.mainChart.data.labels.push(dates);
-        window.mainChart.data.datasets[0].data.push(positive[0]);
-        window.mainChart.data.datasets[1].data.push(negative[0]);
-        window.mainChart.data.datasets[2].data.push(neutral[0]);
+        window.mainChart.data.labels.push(getDatesArray(dates));
+        window.mainChart.data.datasets[0].data.push(getSentimentArray(dates, positive[0]));
+        window.mainChart.data.datasets[1].data.push(getSentimentArray(dates, negative[0]));
+        window.mainChart.data.datasets[2].data.push(getSentimentArray(dates, neutral[0]));
         /*window.mainChart.data.datasets.forEach((dataset)=>{
             dataset.data.push(positive,negative,neutral)
         })*/
@@ -170,6 +186,18 @@ function loadChart(response) {
     //setupHashtagChart(response.hashtagFreqDist);
     setupHashtagFrequencyList(response.hashtagFreqDist)
 
+}
+
+function getDatesArray(dates) {
+    let i;
+    let dateArray = [];
+    console.log(dates)
+    for (i = 1; i < dates.length; i++) {
+        dateArray.push(dates[i].startDate);
+    }
+    console.log(i)
+    //dateArray.push(dates[--i].endDate);
+    return dateArray;
 }
 
 function setupHashtagChart(hashtagFreqDist) {
@@ -367,10 +395,24 @@ function plotWordFrequencyChart(freqDist) {
     });
 }
 
+function getSentimentArray(dateArray, sentimentArray) {
+    let some = []
+    //some.push({t:dateArray[0].startDate, y: sentimentArray[0]})
+    for (let i = 0; i < dateArray.length; i++) {
+        let something = {
+            t: dateArray[i].midPoint,
+            y: sentimentArray[i]
+        }
+        some.push(something)
+    }
+    return some;
+
+}
+
 let myChart = document.getElementById('myChart').getContext('2d');
 
 function plotMainChart(positive, negative, neutral, dates) {
-
+    //console.log(dates)
     let gradient = myChart.createLinearGradient(0, 500, 0, 100);
     gradient.addColorStop(0, "rgba(241, 7, 94, 0.38)");
     gradient.addColorStop(0.5, "rgba(249, 144, 183, 0)");
@@ -386,14 +428,15 @@ function plotMainChart(positive, negative, neutral, dates) {
     greyGradient.addColorStop(0.5, 'rgb(57, 62, 70, 0.25)');
     greyGradient.addColorStop(1, 'rgb(57, 62, 70, 0)');
 
+    console.log(dates.length)
     window.mainChart = new Chart(myChart, {
         type: 'line',
         data: {
-            labels: dates,
+            labels: getDatesArray(dates),
             datasets: [
                 {
                     label: 'Positive',
-                    data: positive,
+                    data: getSentimentArray(dates, positive),
                     borderColor: '#4981FD',
 
                     fill: false,
@@ -401,16 +444,15 @@ function plotMainChart(positive, negative, neutral, dates) {
                 },
                 {
                     label: 'Negative',
-                    data: negative,
+                    data: getSentimentArray(dates, negative),
                     borderColor: '#F1075E',
                     fill: false,
                     backgroundColor: 'rgba(241,7,94,0.1)'
                 },
                 {
                     label: 'Neutral',
-                    data: neutral,
+                    data: getSentimentArray(dates, neutral),
                     borderColor: 'rgb(57, 62, 70, 0.6)',
-
                     radius: 4,
                     backgroundColor: greyGradient,
                     fill: false
@@ -418,12 +460,41 @@ function plotMainChart(positive, negative, neutral, dates) {
             ]
         },
         options: {
+            scales: {
+                bounds: 'ticks',
+                xAxes: [{
+                    gridLines: {
+                        drawOnChartArea: true
+                    },
+                    type: 'time',
+                    distribution: "linear",
+
+                    time: {
+                        unit: 'week'
+                    },
+                    ticks: {
+                        source: 'labels',
+                        beginAtZero: true
+                    },
+                }],
+                yAxes: {
+                    ticks: {
+                        beginAtZero: true
+                    }
+                }
+            },
             legend: {
                 labels: {
                     usePointStyle: true,
-
                 }
-            }
+            },
+            tooltips: {
+                callbacks: {
+                    title: function (tooltipItem) {
+                        return ;
+                    }
+                }
+            },
         }
     })
     Chart.defaults.global.defaultFontFamily = "'Roboto', sans-serif";
@@ -532,12 +603,14 @@ function sendRequestForId(jobId) {
             updateProgressBar(percentage);
             if (res.data.task_status === "finished") {
                 getTaskResult(res.data.task_id)
+                showResultPage();
             } else if (res.data.task_status === "queued") {
                 setTimeout(function () {
                     sendRequestForId(res.data.task_id);
                 }, 1000);
             } else if (res.data.task_status === "failed") {
                 alert("Task failed, please try again");
+                showResultPage();
             } else {
                 setTimeout(function () {
                     sendRequestForId(res.data.task_id);
@@ -560,7 +633,6 @@ function getTaskResult(taskId) {
             console.log(res);
             wipeMainChart();
             loadChart(res);
-            showResultPage();
         })
         .fail((err) => {
             alert(err)
@@ -634,9 +706,7 @@ function startDoneAnimation() {
 }
 
 function showResultPage() {
-    setTimeout(function () {
-        $("#loading-content").hide();
-        $("#content").show();
-        showHome();
-    }, 1000)
+    $("#loading-content").hide();
+    $("#content").show();
+    showHome();
 }

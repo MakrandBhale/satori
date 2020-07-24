@@ -16,6 +16,27 @@ class DbOps:
         self.client = MongoClient(mongo_uri)
         database = self.client.satori
         self.data_collection = database.data
+        self.streamer_collection = database.streamer
+        self.LIMIT = 3
+
+    def create_new_stream_document(self):
+        return str(self.streamer_collection.insert({
+            "positive": 0,
+            "negative": 0,
+            "neutral": 0,
+        }))
+
+    def add_new_field_stream(self, did, key, value):
+        return str(self.streamer_collection.update(
+            {"_id": ObjectId(did)},
+            {"$set": {key: value}}
+        ))
+
+    def get_stream_document(self, did):
+        return self.streamer_collection.findOne({"_id": ObjectId(did)})
+
+    def increment_streams(self, did, key):
+        self.streamer_collection.update({"_id": ObjectId(did)}, {'$inc': {key: 1}})
 
     def create_new_document(self, key, value):
         return str(self.data_collection.insert({key: value}))
@@ -27,7 +48,7 @@ class DbOps:
         return self.data_collection.find_one({"_id": ObjectId(did)}, {key: 1, '_id': 0})
 
     def update(self, did, key, value):
-        self.data_collection.update({"_id": ObjectId(did)}, {'$set': {key: value}})
+        return self.data_collection.update({"_id": ObjectId(did)}, {'$set': {key: value}})
 
     def get_job_list(self, key):
         res = self.data_collection.find_one({"_id": ObjectId(key)})
@@ -45,7 +66,7 @@ class DbOps:
         cursor = self.data_collection \
             .find({"_id": {"$in": queryArray}}, {'query': 1, 'query_status': 1, 'timestamp': 1, 'total_tweets': 1}) \
             .sort([("_id", -1)]) \
-            .limit(10)
+            .limit(self.LIMIT)
         for query in cursor:
             res.append(query)
         return res

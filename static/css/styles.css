@@ -12,7 +12,6 @@ button {
 }
 
 
-
 h5 {
     margin-bottom: 0;
 }
@@ -37,8 +36,12 @@ h5 {
 }
 
 @keyframes antiClockwiseSpin {
-	0%  {transform: rotate(360deg);}
-	100% {transform: rotate(0deg);}
+    0% {
+        transform: rotate(360deg);
+    }
+    100% {
+        transform: rotate(0deg);
+    }
 }
 
 .top-margin {
@@ -639,7 +642,7 @@ label {
     color: #FF8800;
     margin-left: 8px;
     height: 24px;
-        font-size: 14px;
+    font-size: 14px;
 
 }
 
@@ -661,4 +664,31 @@ label {
 .list-group-item {
     margin-bottom: 12px;
     border-radius: 8px !important;
+}
+
+
+.outline-material-button {
+    background-color: transparent;
+    border-radius: 6px;
+    text-decoration: none;
+    color: #4981fd;
+    padding: 8px 14px;
+    transition: background-color 300ms ease-in-out;
+    border: 1px solid #4981fd;
+    outline: none !important;
+    font-weight: 500;
+
+}
+
+.outline-material-button:active {
+    box-shadow: 0 4px 5px 0 rgba(0, 0, 0, 0.14), 0 1px 10px 0 rgba(0, 0, 0, 0.12), 0 2px 4px -1px rgba(0, 0, 0, 0.20);
+}
+.outline-material-button:hover {
+    /*box-shadow: 0 1px 2px 0 rgba(26, 115, 232, 0.451), 0 1px 3px 1px rgba(26, 115, 232, 0.302);*/
+    background-color: #4981fd;
+    color: #fff;
+}
+
+#history_content {
+    padding-bottom: 12px;
 }

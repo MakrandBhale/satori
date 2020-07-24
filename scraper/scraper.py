@@ -1,9 +1,9 @@
 from datetime import timedelta, datetime
 import GetOldTweets3 as got
-from ml import sanitizer
+from delegates import sanitizer
 import redis
 from rq import Queue, get_current_job
-from ml.step_count_generator import get_substraction_factor
+from delegates.step_count_generator import get_substraction_factor
 import uuid
 from db_ops.db_ops import DbOps
 import jsonpickle
@@ -26,7 +26,7 @@ def scrape(searchQuery, did, mongo_uri):
     # should have named addition factor (face-palm)
     substraction_factor = get_substraction_factor(searchQuery.stepSize)
 
-    while beginDate <= lastDate:
+    while True:
         # start from begin date and end when it get over it.
         previous_date = beginDate + timedelta(days=substraction_factor)
 
@@ -34,7 +34,7 @@ def scrape(searchQuery, did, mongo_uri):
         # task status later by the same function
 
         job = q.enqueue(scrape_tweet, searchQuery.query, str(beginDate), str(previous_date), searchQuery.frequency,
-                        mongo_uri, did)
+                        mongo_uri, did, job_timeout='1h')
         # result = scrape_tweet(
         #     query,
         #     str(beginDate),
@@ -46,6 +46,8 @@ def scrape(searchQuery, did, mongo_uri):
         db.close_connection()
         beginDate = previous_date
         final_list.append(job.id)
+        if beginDate >= lastDate:
+            break
     return final_list
 
 
@@ -53,6 +55,8 @@ def scrape_tweet(query, begin_date, end_date, limit, mongo_uri, did):
     db = DbOps(mongo_uri)
     # db = DbOps(client)
     current_job = get_current_job()
+    print("id : ", current_job.id)
+    print("status: ", current_job.get_status())
     db.update(did, "job_list." + current_job.id + ".job_status", current_job.get_status())
     db.update(did, "jobs_status_array." + current_job.id, 0)
     tweet_criteria = got.manager.TweetCriteria().setQuerySearch(query) \
@@ -60,24 +64,17 @@ def scrape_tweet(query, begin_date, end_date, limit, mongo_uri, did):
         .setUntil(end_date) \
         .setMaxTweets(limit)
     tweets = got.manager.TweetManager.getTweets(tweet_criteria)
-    # updating job details in the db
-    # db= db object; did = document id; uid = job_id;
 
-    # print(str(data_collection.insert({get_current_job().id: "true"})))
-    # db.update({"_id": ObjectId(did)}, {'$set': {"job_list." + current_job.id + ".job_status":
-    # current_job.get_status()}})
+    print(str(begin_date))
+    print("Total tweets: " + str(len(tweets)))
+    db.update(did, "job_list." + current_job.id + ".job_date", str(begin_date) + "-" + str(end_date))
+    db.update(did, "job_list." + current_job.id + ".job_status", "finished")
 
     some_obj = sanitizer.wrap(tweets)
     json_obj = jsonpickle.encode(some_obj)
-    # print(str(current_job.id) + " : " + str(begin_date))
-    # print(str(current_job.id) + " : " + "finished")
-    # print(str(current_job.id) + " : " + str(len(tweets)))
-    db.update(did, "job_list." + current_job.id + ".job_date", str(begin_date))
-    db.update(did, "job_list." + current_job.id + ".job_status", "finished")
     db.update(did, "job_list." + current_job.id + ".job_res", json_obj)
     db.update(did, "jobs_status_array." + current_job.id, 1)
     res = db.get_value_by_key(did, 'total_tweets')
-    print(res)
     count = len(tweets)
     if res:
         count = count + res['total_tweets']

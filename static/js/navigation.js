@@ -12,6 +12,11 @@ function showHome() {
     show(document.getElementById("home"))
 }
 
+function showStreamPage() {
+    selectMenu(document.getElementById("live_stream_menu"))
+    show(document.getElementById("live_stream_content"))
+}
+
 function show(newElement) {
     $(currentlyShowing).hide()
     currentlyShowing = newElement;
