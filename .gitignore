@@ -6,3 +6,4 @@
 !.elasticbeanstalk/*.global.yml
 /satori.zip
 /credentials/
+
