@@ -6,4 +6,4 @@
 !.elasticbeanstalk/*.global.yml
 /satori.zip
 /credentials/
-
+EB-Gotchas
