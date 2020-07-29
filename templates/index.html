@@ -13,7 +13,7 @@
     <link href='https://cdn.jsdelivr.net/npm/boxicons@2.0.5/css/boxicons.min.css' rel='stylesheet'>
     <title>Hello, world!</title>
     <link rel="icon" href="{{url_for('static', filename='img/favicon.png') }}" type="image/png" sizes="16x16">
-    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
 </head>
 <body>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.5.1/jquery.min.js"
@@ -28,7 +28,10 @@
 <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/js/bootstrap.min.js"
         integrity="sha384-OgVRvuATP1z7JjHLkuOU7Xw704+h835Lr+6QL9UvYjZE3Ipu6Tp75j7Bh/kR0JKI"
         crossorigin="anonymous"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.9.3/Chart.bundle.js" integrity="sha512-G8JE1Xbr0egZE5gNGyUm1fF764iHVfRXshIoUWCTPAbKkkItp/6qal5YAHXrxEu4HNfPTQs6HOu3D5vCGS1j3w==" crossorigin="anonymous"></script><!--<script src="//cdn.jsdelivr.net/npm/pouchdb@7.2.1/dist/pouchdb.min.js"></script>-->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.9.3/Chart.bundle.js"
+        integrity="sha512-G8JE1Xbr0egZE5gNGyUm1fF764iHVfRXshIoUWCTPAbKkkItp/6qal5YAHXrxEu4HNfPTQs6HOu3D5vCGS1j3w=="
+        crossorigin="anonymous"></script>
+<!--<script src="//cdn.jsdelivr.net/npm/pouchdb@7.2.1/dist/pouchdb.min.js"></script>-->
 
 <script src="https://unpkg.com/@lottiefiles/lottie-player@0.4.0/dist/lottie-player.js"></script>
 
@@ -38,21 +41,39 @@
         <!--        <i class="material-icons md-36">person</i>-->
         <!--        <i class="material-icons md-36">watch_later</i>-->
         <!--        <i class="material-icons md-36">settings</i>-->
-        <img src="{{url_for('static', filename='img/favicon.png') }}" width="32"
-             height="32" alt="">
+        <div class="container row">
+            <div class="col-4">
+                <img class="icon-shadow" src="{{url_for('static', filename='img/favicon.png') }}" width="48"
+                     height="48" alt="">
+            </div>
+            <div class="col">
+                <span style="font-weight: 500">Brew</span> Sentiment
+            </div>
+        </div>
         <div class="divider"></div>
-        <a href="#home" class="menu-selected" id="home_menu" onclick="showHome()">
-            <i class='bx bxs-home bx-sm'></i>
+        <a href="#home" class="menu-selected sidebar-menu" id="home_menu" onclick="showHome()">
+            <div>
+                <i class='bx bxs-home ' style="font-size: 18px; margin: 8px 8px 8px 12px"></i>
+                <span>Home</span>
+            </div>
+
         </a>
         <!--<a href="#live_stream" id="live_stream_menu" onclick="showStreamPage()">
             <i class='bx bxs-analyse bx-sm'></i>
         </a>-->
-        <a href="#history" id="history_menu" onclick="showHistory()">
-            <i class='bx bx-history bx-sm'></i>
+        <a href="#history" class="sidebar-menu" id="history_menu" onclick="showHistory()">
+            <div>
+                <i class='bx bx-history ' style="font-size: 18px; margin: 8px 8px 8px 12px"></i>
+                <span>History</span>
+            </div>
         </a>
 
-        <a href="#settings" class="bottom">
-            <i class='bx bxs-cog bx-sm'></i>
+        <a href="#settings" class="bottom sidebar-menu">
+            <div>
+                <i class='bx bxs-cog' style="font-size: 18px; margin: 8px 8px 8px 12px"></i>
+                <span>Settings</span>
+            </div>
+
         </a>
     </div>
 
@@ -197,6 +218,9 @@
                             <!--        <button onclick="return loadDoc()" class="btn btn-outline-success my-2 my-sm-0">Submit</button>-->
                         </form>
                     </div>
+                </div>
+                <div class="row">
+                    <h4>Showing results of quer</h4>
                 </div>
                 <div class="row row-marginal ">
                     <div class="top-margin col-lg-2 col-md-3 col-sm-6 col-xs-6">
@@ -380,7 +404,7 @@
         </div>
         <div style="display: none" id="history_content" class="col-12 ">
             <div class="row  justify-content-center align-content-center" style="margin-bottom: 18px">
-                <div class="col-lg-6 col-md-10 col-sm-11 d-flex justify-content-between">
+                <div class="col-xl-6  col-lg-10 col-md-10 col-sm-11 d-flex justify-content-between">
                     <span class="xl-text">Your previous searches</span>
                     <button class="material-outline-image-button" onclick="fetchHistoryArray()">
                         <i id="refresh-icon" class='bx bx-refresh ' style="color: white; font-size: 24px"></i>
@@ -389,7 +413,7 @@
                 </div>
             </div>
             <div id="history-list-container" class="row justify-content-center">
-                <div class="col-lg-6 col-md-10 col-sm-11">
+                <div class="col-xl-6 col-lg-10 col-md-10 col-sm-11">
                     <div id="history-list" class="list-group ">
                     </div>
 
@@ -406,8 +430,8 @@
 <script type="text/javascript" src="{{url_for('static', filename='js/script.js') }}"></script>
 <script type="text/javascript" src="{{url_for('static', filename='js/navigation.js') }}"></script>
 <script type="text/javascript" src="{{url_for('static', filename='js/history.js') }}"></script>
+<script type="text/javascript" src="{{url_for('static', filename='js/notifications.js') }}"></script>
 <script type="text/javascript" src="{{url_for('static', filename='js/streamer.js') }}"></script>
-
 
 
 <script type="text/javascript">
@@ -424,12 +448,16 @@
         $("#advanced-search-form").on('submit', function (e) {
             e.preventDefault();
         });
+            $(document).ready(function(){
+    });
     });
 
     $(function () {
         $('[data-toggle="tooltip"]').tooltip()
     })
+
 </script>
+<div id="notification-container"></div>
 </body>
 </html>
 <!--

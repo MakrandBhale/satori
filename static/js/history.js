@@ -144,6 +144,10 @@ function updateHistoryUi(list) {
             list[i]['total_tweets'],
             list[i]['_id']['$oid']
         );
+        if(list[i]['query_status'] === "queued"){
+            sendRequestForId(list[i]['_id']['$oid'])
+        }
+
         historyListUl.appendChild(listItem)
         // let li = document.createElement("li");
         // li.appendChild(document.createTextNode(list[i]['query']['query']))
@@ -166,7 +170,6 @@ function getDateString(timestamp) {
     timestamp = timestamp * 1000;
     let timestampDate = new Date(timestamp);
     let today = new Date();
-    console.log("today :" + today.getDate())
     let diff = Math.abs(today - timestampDate);
     let minutes = Math.floor((diff / 1000) / 60);
     if (minutes < 5) {
@@ -258,6 +261,7 @@ function loadPreviousQuery(searchId, button) {
     button.innerText = "Loading...";
     button.disabled = true;
     getTaskResult(searchId);
+    showHome();
 }
 
 function getLoadMoreButtonTemplate() {

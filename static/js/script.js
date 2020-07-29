@@ -133,7 +133,7 @@ function loadChart(response) {
     //console.log("chartdata: " + res);
     //let response = JSON.parse(res)
     //console.log(response);
-    showHome();
+    //showHome();
     let datalist = response.timeFragment;
 
     let positive = [], negative = [], neutral = [];
@@ -191,11 +191,9 @@ function loadChart(response) {
 function getDatesArray(dates) {
     let i;
     let dateArray = [];
-    console.log(dates)
     for (i = 1; i < dates.length; i++) {
         dateArray.push(dates[i].startDate);
     }
-    console.log(i)
     //dateArray.push(dates[--i].endDate);
     return dateArray;
 }
@@ -418,17 +416,15 @@ function plotMainChart(positive, negative, neutral, dates) {
     gradient.addColorStop(0.5, "rgba(249, 144, 183, 0)");
     gradient.addColorStop(1, "rgba(255, 255, 255, 0)");
 
-    let blueGradient = myChart.createLinearGradient(0, 0, 0, 450);
-    blueGradient.addColorStop(0, 'rgba(73,129,253,0.3)');
-    blueGradient.addColorStop(0.5, 'rgba(73,129,253,0.1)');
-    blueGradient.addColorStop(1, 'rgba(73,129,253,0)');
+    let blueGradient = myChart.createLinearGradient(0, 0, 50, 400);
+    blueGradient.addColorStop(0, '#25c8fc');
+    blueGradient.addColorStop(1, '#6a11cb');
 
     let greyGradient = myChart.createLinearGradient(0, 0, 0, 450);
     greyGradient.addColorStop(0, 'rgb(109,115,132,0.6)');
     greyGradient.addColorStop(0.5, 'rgb(57, 62, 70, 0.25)');
     greyGradient.addColorStop(1, 'rgb(57, 62, 70, 0)');
 
-    console.log(dates.length)
     window.mainChart = new Chart(myChart, {
         type: 'line',
         data: {
@@ -603,6 +599,11 @@ function sendRequestForId(jobId) {
             updateProgressBar(percentage);
             if (res.data.task_status === "finished") {
                 getTaskResult(res.data.task_id)
+                if(currentPage !== "home"){
+                    showFinishedNotification();
+                } else {
+                    showHome();
+                }
                 showResultPage();
             } else if (res.data.task_status === "queued") {
                 setTimeout(function () {
@@ -624,6 +625,7 @@ function sendRequestForId(jobId) {
 
 
 function getTaskResult(taskId) {
+    /*make final call*/
     $.ajax({
         url: '/get_result/' + taskId,
         method: 'POST'
@@ -708,5 +710,5 @@ function startDoneAnimation() {
 function showResultPage() {
     $("#loading-content").hide();
     $("#content").show();
-    showHome();
+    console.log("showing content")
 }

@@ -17,8 +17,8 @@ from credentials import mongo_db_creds
 redis_conn = Redis()
 step_count = 7
 
-MONGO_URI = mongo_db_creds.MLAB_MONGO_URI
-MONGO_DB_URI = mongo_db_creds.MLAB_MONGO_DB_URI
+MONGO_URI = mongo_db_creds.LOCAL_MONGO_URI
+MONGO_DB_URI = mongo_db_creds.LOCAL_MONGO_DB_URI
 
 QUERY_STATUS_PATH = "query_status"
 COMPUTED_RESULT = "computed_res"

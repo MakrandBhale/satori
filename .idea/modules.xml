@@ -2,7 +2,7 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
-      <module fileurl="file://$PROJECT_DIR$/.idea/satori.iml" filepath="$PROJECT_DIR$/.idea/satori.iml" />
+      <module fileurl="file://$PROJECT_DIR$/../brew/.idea/brew.iml" filepath="$PROJECT_DIR$/../brew/.idea/brew.iml" />
     </modules>
   </component>
 </project>
