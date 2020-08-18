@@ -13,7 +13,7 @@ from models import Jobs, Query
 import jsonpickle
 from bson.json_util import dumps
 from credentials import mongo_db_creds
-
+from predictor import predictor
 redis_conn = Redis()
 step_count = 7
 
@@ -111,9 +111,11 @@ def get_result(task_id):
     job_list = res['job_list']
     total_jobs = 0
     computed_res = res.get(COMPUTED_RESULT)
+
     # if the result is already calculated then send
     # already computed response.
     if computed_res:
+        computed_res['query'] = res.get('query')
         return jsonify(computed_res)
 
     finished_job_list = []
@@ -129,6 +131,7 @@ def get_result(task_id):
         db.update(task_id, QUERY_STATUS_PATH, "finished")
         response = post_processing(finished_job_list)
         db.update(task_id, COMPUTED_RESULT, response)
+        response['query'] = res.get('query')
         return jsonify(response)
         # return app.response_class(response=jsonify(response),
         #                           status=200,
@@ -180,6 +183,21 @@ def create_new_stream(keyword):
     db.add_new_field_stream(did, "start_time", str(time.time()))
     streamer.stream_data(keyword, db, did)
     return app.response_class(response=json.dumps({"id": did}),
+                              status=200,
+                              mimetype='application/json')
+
+
+@app.route('/predict/<task_id>', methods=['POST'])
+def predictor_api(task_id):
+    # TODO: validate task_id
+    document = db.read_from_db(task_id)
+
+    result = {
+        'prediction' : predictor.initialise(document),
+        'stepCount': document['query']['stepCount']
+    }
+
+    return app.response_class(response=json.dumps(result),
                               status=200,
                               mimetype='application/json')
 

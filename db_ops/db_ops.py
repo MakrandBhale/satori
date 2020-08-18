@@ -83,7 +83,7 @@ class DbOps:
         nextQueryArray = array_to_obj_id(queryIdArray[nextIndex: nextIndex+5])
 
         cursor = self.data_collection \
-            .find({"_id": {"$in": nextQueryArray}}, {'query': 1, 'query_status': 1, 'timestamp': 1}) \
+            .find({"_id": {"$in": nextQueryArray}}, {'query': 1, 'query_status': 1, 'timestamp': 1, "total_tweets": 1})\
             .sort([("_id", -1)]) \
 
         for query in cursor:

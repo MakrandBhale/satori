@@ -3,7 +3,7 @@ window.total = 0;
 window.posCount = 0;
 window.negCount = 0;
 window.neutralCount = 0;
-
+window.currentTaskId = null;
 
 function loadDoc() {
     //alert("called");
@@ -185,19 +185,35 @@ function loadChart(response) {
     setupLinkFrequencyList(response.linkFreqDist)
     //setupHashtagChart(response.hashtagFreqDist);
     setupHashtagFrequencyList(response.hashtagFreqDist)
-
+    setupAboutQueryText(response.query)
 }
 
-function getDatesArray(dates) {
+function setupAboutQueryText(query){
+    let aboutQueryContainer = document.getElementById("about-query");
+    aboutQueryContainer.innerHTML = `
+        <span class="text-muted" style="margin-left: 15px; margin-right: 15px">Showing analysis report for query 
+        <strong style="color: #4d4dff; font-size: 18px">"${query.query}"</strong>
+        </span>
+        
+    `
+}
+
+function getDatesArray(dates, updateOps = false) {
     let i;
     let dateArray = [];
+    if(updateOps) {
+        dateArray.push(dates[0].startDate);
+    }
     for (i = 1; i < dates.length; i++) {
         dateArray.push(dates[i].startDate);
     }
+
     //dateArray.push(dates[--i].endDate);
+
     return dateArray;
 }
 
+/*
 function setupHashtagChart(hashtagFreqDist) {
     if (window.hashtagCloudChart !== undefined) {
         console.log(window.hashtagCloudChart);
@@ -244,6 +260,7 @@ function setupHashtagChart(hashtagFreqDist) {
         }
     });
 }
+*/
 
 function prepareSafeHashtagURL(hashtag) {
     return "https://twitter.com/search?q=" + encodeURIComponent(hashtag);
@@ -434,7 +451,7 @@ function plotMainChart(positive, negative, neutral, dates) {
                     label: 'Positive',
                     data: getSentimentArray(dates, positive),
                     borderColor: '#4981FD',
-
+                    spanGaps: true,
                     fill: false,
                     backgroundColor: 'rgba(73,129,253,0.3)'
                 },
@@ -472,12 +489,24 @@ function plotMainChart(positive, negative, neutral, dates) {
                         source: 'labels',
                         beginAtZero: true
                     },
+                    scaleLabel: {
+                        display: true,
+                        labelString: "Timeline",
+                        fontSize: 18,
+                    },
                 }],
-                yAxes: {
+                yAxes: [{
+                    scaleLabel: {
+                        display: true,
+                        labelString: "Tweets",
+                        fontSize: 18,
+
+                    },
+
                     ticks: {
                         beginAtZero: true
                     }
-                }
+                }]
             },
             legend: {
                 labels: {
@@ -487,7 +516,7 @@ function plotMainChart(positive, negative, neutral, dates) {
             tooltips: {
                 callbacks: {
                     title: function (tooltipItem) {
-                        return ;
+                        return;
                     }
                 }
             },
@@ -599,7 +628,7 @@ function sendRequestForId(jobId) {
             updateProgressBar(percentage);
             if (res.data.task_status === "finished") {
                 getTaskResult(res.data.task_id)
-                if(currentPage !== "home"){
+                if (currentPage !== "home") {
                     showFinishedNotification();
                 } else {
                     showHome();
@@ -626,6 +655,7 @@ function sendRequestForId(jobId) {
 
 function getTaskResult(taskId) {
     /*make final call*/
+    window.currentTaskId = taskId
     $.ajax({
         url: '/get_result/' + taskId,
         method: 'POST'

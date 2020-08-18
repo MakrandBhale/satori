@@ -219,8 +219,8 @@
                         </form>
                     </div>
                 </div>
-                <div class="row">
-                    <h4>Showing results of quer</h4>
+                <div class="row" id="about-query">
+
                 </div>
                 <div class="row row-marginal ">
                     <div class="top-margin col-lg-2 col-md-3 col-sm-6 col-xs-6">
@@ -309,12 +309,20 @@
                 <div class="row row-marginal">
                     <div class="top-margin col-lg-7 col-md-12 col-sm-12">
                         <div class="card custom-cards">
-                            <div class="card-header">
-                                <h5>
-                                    <!--                                <i class="material-icons card-header-icon">timeline</i>-->
-                                    <i class='bx bx-line-chart bx-sm card-header-icon '></i>
-                                    Overview
+                            <div class="card-header" style="padding: 8px 10px !important;">
+                                <h5 class="d-flex justify-content-between">
+                                    <div class="col" style="padding-top: 4px">
+                                        <i class='bx bx-line-chart bx-sm card-header-icon '></i>
+                                        Overview
+                                    </div>
+                                    <button onclick="predict()" id="predict-button"
+                                            class="align-self-end material-outline-image-button">
+                                        Predict
+                                        <i id="predictor-loader" style="display:none; margin-left: 4px;color: #4981FD"
+                                           class='bx bx-loader-alt bx-spin'></i>
+                                    </button>
                                 </h5>
+
                             </div>
                             <div class="card-body">
 
@@ -432,6 +440,7 @@
 <script type="text/javascript" src="{{url_for('static', filename='js/history.js') }}"></script>
 <script type="text/javascript" src="{{url_for('static', filename='js/notifications.js') }}"></script>
 <script type="text/javascript" src="{{url_for('static', filename='js/streamer.js') }}"></script>
+<script type="text/javascript" src="{{url_for('static', filename='js/predictor.js') }}"></script>
 
 
 <script type="text/javascript">
@@ -448,8 +457,8 @@
         $("#advanced-search-form").on('submit', function (e) {
             e.preventDefault();
         });
-            $(document).ready(function(){
-    });
+        $(document).ready(function () {
+        });
     });
 
     $(function () {

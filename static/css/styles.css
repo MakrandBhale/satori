@@ -327,8 +327,13 @@ h5 {
     padding: 6px 8px;
     transition: background-color 0.1s ease-in-out;
     outline: none !important;
+    font-size: 16px;
 }
 
+.material-outline-image-button:disabled {
+    background-color: rgba(196, 196, 196, 0.1) !important;
+    color: #6A7284 !important;
+}
 .material-outline-image-button:active {
     box-shadow: 0 4px 5px 0 rgba(0, 0, 0, 0.14), 0 1px 10px 0 rgba(0, 0, 0, 0.12), 0 2px 4px -1px rgba(0, 0, 0, 0.20);
 }
