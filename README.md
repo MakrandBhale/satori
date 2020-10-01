@@ -1,8 +1,8 @@
 
-#Brew 📈 
+# Brew 📈 
 *A web based sentiment analysis tool which will tell you how your product/brand is doing.*
 
-#####It will try to answer following questions.
+##### It will try to answer following questions.
   
 - How many people are talking about your product?
 - What are they talking about?
