@@ -1,1 +1,2 @@
-REMOTE_HOST = 'http://satori-env.eba-d5hujvqd.ap-south-1.elasticbeanstalk.com/'
+# DpJv4K656zfx/piVslEyTrxDux8jc4MDWL3GfMqYkEpqfFHqHzaRea/AS10U1HybvpqgsRS3QTbALjYkefJvRw==
+REMOTE_HOST = '[REMOTE HOST]'

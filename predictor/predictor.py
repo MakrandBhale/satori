@@ -76,7 +76,7 @@ def prophet_predictor(original_df, sentiment, stepCount):
     print(df.head())
     print(df.dtypes)
 
-    model = Prophet(interval_width=0.95)
+    model = Prophet(interval_width=0.95) 
     model.fit(df)
     future_dates = model.make_future_dataframe(periods=3, include_history=False, freq=STEPS[stepCount])
     forecast = model.predict(future_dates)

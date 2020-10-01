@@ -5,6 +5,5 @@
 !.elasticbeanstalk/*.cfg.yml
 !.elasticbeanstalk/*.global.yml
 /satori.zip
-/credentials/
 EB-Gotchas
-/credentials/mongo_db_creds.py
+
